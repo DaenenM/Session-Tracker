@@ -13,14 +13,17 @@ export const SHOP_ITEMS = {
         { id: 'color-rainbow', name: 'Rainbow', type: 'color', value: 'rainbow', price: 500 },
     ],
     emojis: [
+        { id: 'emoji-cat', name: 'cat', type: 'emoji', value: '😸', price: 175 },
         { id: 'emoji-lightning', name: 'Lightning', type: 'emoji', value: '⚡', price: 200 },
         { id: 'emoji-rocket', name: 'Rocket', type: 'emoji', value: '🚀', price: 225 },
         { id: 'emoji-fire', name: 'Fire', type: 'emoji', value: '🔥', price: 250 },
         { id: 'emoji-skull', name: 'Skull', type: 'emoji', value: '💀', price: 275 },
         { id: 'emoji-star', name: 'Star', type: 'emoji', value: '⭐', price: 300 },
-        { id: 'emoji-diamond', name: 'Diamond', type: 'emoji', value: '💎', price: 300 },
-        { id: 'emoji-ghost', name: 'Ghost', type: 'emoji', value: '👻', price: 300 },
-        { id: 'emoji-crown', name: 'Crown', type: 'emoji', value: '👑', price: 500 },
+        { id: 'emoji-diamond', name: 'Diamond', type: 'emoji', value: '💎', price: 325 },
+        { id: 'emoji-ghost', name: 'Ghost', type: 'emoji', value: '👻', price: 350 },
+        { id: 'emoji-moneywings', name: 'Money Wings', type: 'emoji', value: '💸', price: 500 },
+        { id: 'emoji-crown', name: 'Crown', type: 'emoji', value: '👑', price: 1000 },
+        
     ],
 };
 
