@@ -1,6 +1,6 @@
 // src/components/StyledName.jsx
 
-const ANIMATED_EMOJIS = ['👑', '💎', '👻', '💸', '🔥'];
+const ANIMATED_EMOJIS = ['👑', '💎', '👻', '💸', '🔥', '⭐'];
 
 export default function StyledName({ displayName, nameColor, nameEmoji }) {
     const isRainbow = nameColor === 'rainbow';
@@ -26,6 +26,7 @@ function getAnimClass(emoji) {
         case '💎': return 'sparkle';
         case '👻': return 'float';
         case '🔥': return 'flicker';
+        case '⭐': return 'twinkle';
         default: return '';
     }
 }
