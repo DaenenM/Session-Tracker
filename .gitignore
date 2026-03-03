@@ -1,0 +1,13 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# Python
+__pycache__/
+*.pyc
+
+# Databases
+*.sqlite3
+
+src/firebase.js

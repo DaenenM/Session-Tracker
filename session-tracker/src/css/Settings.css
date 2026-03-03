@@ -1,0 +1,378 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+/* ============================================
+   SETTINGS CONTAINER
+   ============================================ */
+
+.settings-container {
+    min-height: 100vh;
+    padding: 2rem 2rem 1rem;
+    animation: settingsFadeIn 0.6s ease-out both;
+}
+
+.settings-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+@keyframes settingsFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============================================
+   TITLE
+   ============================================ */
+
+.settings-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    opacity: 0;
+    animation: settingsSlideUp 0.5s ease-out forwards;
+    animation-delay: 0.1s;
+}
+
+@keyframes settingsSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.settings-card {
+    background: rgba(26, 26, 46, 0.7);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 16px;
+    padding: 1.75rem;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: settingsSlideUp 0.5s ease-out forwards;
+}
+
+.settings-card:nth-child(2) { animation-delay: 0.2s; }
+.settings-card:nth-child(3) { animation-delay: 0.3s; }
+.settings-card:nth-child(4) { animation-delay: 0.4s; }
+
+.settings-card-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 1.25rem 0;
+}
+
+.settings-divider {
+    height: 1px;
+    background: rgba(102, 126, 234, 0.1);
+    margin: 1.25rem 0;
+}
+
+/* ============================================
+   PROFILE INFO
+   ============================================ */
+
+.settings-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.settings-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.settings-info-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(184, 193, 236, 0.45);
+}
+
+.settings-info-value {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #b8c1ec;
+}
+
+/* Role badges */
+.settings-role-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.role-admin {
+    background: rgba(248, 113, 113, 0.12);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.role-staff {
+    background: rgba(102, 126, 234, 0.15);
+    color: #8b9cf7;
+    border: 1px solid rgba(102, 126, 234, 0.25);
+}
+
+.role-user {
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.25);
+}
+
+.role-viewer {
+    background: rgba(184, 193, 236, 0.08);
+    color: rgba(184, 193, 236, 0.5);
+    border: 1px solid rgba(184, 193, 236, 0.15);
+}
+
+/* ============================================
+   FORM FIELD
+   ============================================ */
+
+.settings-field {
+    margin-bottom: 0.25rem;
+}
+
+.settings-label {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #b8c1ec;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.settings-input-row {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.settings-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: rgba(102, 126, 234, 0.06);
+    border: 2px solid rgba(102, 126, 234, 0.15);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+.settings-input::placeholder {
+    color: rgba(184, 193, 236, 0.3);
+}
+
+.settings-input:focus {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.settings-save-btn {
+    padding: 0.75rem 1.25rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.settings-save-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+}
+
+.settings-save-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.settings-save-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.settings-save-btn.saved {
+    background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+}
+
+.settings-save-btn.error {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+}
+
+/* ============================================
+   ACTION ROWS
+   ============================================ */
+
+.settings-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.settings-action-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.settings-action-title {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.settings-action-desc {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    color: rgba(184, 193, 236, 0.45);
+}
+
+.settings-action-btn {
+    padding: 0.6rem 1.15rem;
+    border-radius: 10px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.settings-action-btn.logout {
+    background: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.settings-action-btn.logout:hover {
+    background: rgba(248, 113, 113, 0.2);
+    border-color: rgba(248, 113, 113, 0.4);
+    transform: translateY(-1px);
+}
+
+.settings-action-btn.reset-pw {
+    background: rgba(102, 126, 234, 0.1);
+    color: #8b9cf7;
+    border: 1px solid rgba(102, 126, 234, 0.25);
+}
+
+.settings-action-btn.reset-pw:hover:not(:disabled) {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-1px);
+}
+
+.settings-action-btn.reset-pw:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.settings-action-btn.reset-pw.sent {
+    background: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.25);
+}
+
+.settings-action-btn.reset-pw.error {
+    background: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.25);
+}
+
+.settings-reset-notice {
+    margin-top: 1rem;
+    padding: 0.7rem 1rem;
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    border-radius: 10px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    color: #4ade80;
+    animation: settingsSlideUp 0.3s ease-out;
+}
+
+/* ============================================
+   RESPONSIVE - TABLET (768px)
+   ============================================ */
+
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .settings-title {
+        font-size: 1.75rem;
+    }
+
+    .settings-card {
+        padding: 1.25rem;
+    }
+
+    .settings-info-row {
+        gap: 1rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE (480px)
+   ============================================ */
+
+@media (max-width: 480px) {
+    .settings-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .settings-title {
+        font-size: 1.5rem;
+    }
+
+    .settings-card {
+        padding: 1rem;
+    }
+
+    .settings-input-row {
+        flex-direction: column;
+    }
+
+    .settings-save-btn {
+        width: 100%;
+    }
+
+    .settings-action-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .settings-action-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

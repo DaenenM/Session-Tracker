@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "liveSession": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}

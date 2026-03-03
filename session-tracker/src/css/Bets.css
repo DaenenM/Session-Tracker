@@ -1,0 +1,982 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+/* ============================================
+   CONTAINER & LAYOUT
+   ============================================ */
+
+.bets-container {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2vh;
+    animation: pageFadeIn 0.6s ease-out both;
+}
+
+@keyframes pageFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============================================
+   BETS CARD
+   ============================================ */
+
+.bets-wrapper {
+    background: rgba(26, 26, 46, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    max-width: 1000px;
+    width: 100%;
+    animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.bets-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: slideUpChild 0.5s ease-out forwards;
+    animation-delay: 0.1s;
+}
+
+.bets-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.bets-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+    color: #fff;
+}
+
+.bets-subtitle {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    color: #8892b0;
+}
+
+@keyframes slideUpChild {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   TWO COLUMN LAYOUT
+   ============================================ */
+
+.bets-content {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    opacity: 0;
+    animation: slideUpChild 0.5s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+/* ============================================
+   ODDS SECTION
+   ============================================ */
+
+.odds-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.odds-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: rgba(184, 193, 236, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+/* ============================================
+   ODDS ROW LAYOUT
+   ============================================ */
+
+.odds-row {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+}
+
+.odds-column {
+    flex: 1;
+    min-width: 0;
+}
+
+.odds-subtitle {
+    display: block;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: rgba(184, 193, 236, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+}
+
+.odds-range-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* ============================================
+   ODDS BUTTONS
+   ============================================ */
+
+.odds-button {
+    width: 100%;
+    background: rgba(102, 126, 234, 0.08);
+    color: #fff;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(102, 126, 234, 0.12);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.odds-button:hover {
+    background: rgba(102, 126, 234, 0.18);
+    border-color: rgba(102, 126, 234, 0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.odds-button:active {
+    transform: translateY(0);
+}
+
+.odds-label {
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.odds-probability {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   ACTIVE BET STATES
+   ============================================ */
+
+.odds-button.active {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+    box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.3), 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.odds-button.active .odds-label {
+    color: #fff;
+}
+
+.odds-button.active .odds-probability {
+    color: #a5b4fc;
+}
+
+.over-button.active {
+    background: rgba(74, 222, 128, 0.25);
+    border-color: #4ade80;
+    box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.3), 0 4px 12px rgba(74, 222, 128, 0.15);
+    color: #fff;
+}
+
+.under-button.active {
+    background: rgba(248, 113, 113, 0.25);
+    border-color: #f87171;
+    box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.3), 0 4px 12px rgba(248, 113, 113, 0.15);
+    color: #fff;
+}
+
+/* ============================================
+   OVER / UNDER SECTION
+   ============================================ */
+
+.over-under-section {
+    background: rgba(102, 126, 234, 0.06);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 16px;
+    padding: 1rem;
+}
+
+.over-under-label {
+    display: block;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(184, 193, 236, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.over-under-average {
+    color: #667eea;
+    font-weight: 700;
+    margin: 0 0.2rem;
+}
+
+.over-under-payout {
+    color: rgba(184, 193, 236, 0.4);
+    font-size: 0.75rem;
+    margin-left: 0.3rem;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.over-under-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.over-under-button {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    color: #fff;
+}
+
+.over-button {
+    background: rgba(74, 222, 128, 0.12);
+    border-color: rgba(74, 222, 128, 0.25);
+    color: #4ade80;
+}
+
+.over-button:hover {
+    background: rgba(74, 222, 128, 0.22);
+    border-color: rgba(74, 222, 128, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(74, 222, 128, 0.15);
+}
+
+.under-button {
+    background: rgba(248, 113, 113, 0.12);
+    border-color: rgba(248, 113, 113, 0.25);
+    color: #f87171;
+}
+
+.under-button:hover {
+    background: rgba(248, 113, 113, 0.22);
+    border-color: rgba(248, 113, 113, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(248, 113, 113, 0.15);
+}
+
+.over-under-button:active {
+    transform: translateY(0);
+}
+
+/* ============================================
+   PLACE BET SECTION
+   ============================================ */
+
+.place-bet-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.place-bet-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: rgba(184, 193, 236, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+/* ============================================
+   SELECTED BET DISPLAY
+   ============================================ */
+
+.selected-bet-box {
+    background: rgba(102, 126, 234, 0.08);
+    border: 1px solid rgba(102, 126, 234, 0.25);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+.selected-bet-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+}
+
+.selected-bet-row:last-child {
+    margin-bottom: 0;
+}
+
+.selected-bet-label {
+    color: rgba(184, 193, 236, 0.5);
+}
+
+.selected-bet-value {
+    color: #fff;
+    font-weight: 600;
+}
+
+.selected-bet-probability {
+    color: #667eea;
+    font-weight: 700;
+}
+
+/* No Selection Message */
+.no-selection-warning {
+    background: rgba(102, 126, 234, 0.06);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    color: #8892b0;
+    text-align: center;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   BET AMOUNT INPUT
+   ============================================ */
+
+.bet-amount-group {
+    margin-bottom: 1.25rem;
+}
+
+.bet-amount-label {
+    display: block;
+    font-family: 'Work Sans', sans-serif;
+    color: rgba(184, 193, 236, 0.5);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.bet-amount-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    background: rgba(102, 126, 234, 0.06);
+    color: #fff;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-family: 'Work Sans', sans-serif;
+    text-align: center;
+}
+
+.bet-amount-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.12);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.bet-amount-input::placeholder {
+    color: rgba(136, 146, 176, 0.3);
+}
+
+/* ============================================
+   PAYOUT DISPLAY
+   ============================================ */
+
+.payout-box {
+    background: rgba(102, 126, 234, 0.08);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    animation: slideIn 0.3s ease-out;
+}
+
+.payout-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 0.6rem;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+}
+
+.payout-row:last-child {
+    margin-bottom: 0;
+}
+
+.payout-amount {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.payout-multiplier {
+    font-size: 0.8rem;
+    color: rgba(184, 193, 236, 0.4);
+    font-family: 'Work Sans', sans-serif;
+    text-align: center;
+    margin-top: 0.25rem;
+}
+
+/* ============================================
+   PLACE BET BUTTON
+   ============================================ */
+
+.place-bet-button {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+}
+
+.place-bet-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.45);
+}
+
+.place-bet-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.place-bet-button:disabled {
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    cursor: not-allowed;
+    opacity: 0.4;
+    box-shadow: none;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   RESPONSIVE - SMALL DESKTOP (1150px)
+   ============================================ */
+
+@media (max-width: 1150px) and (min-width: 1025px) {
+    .bets-wrapper {
+        padding: 2rem 1.75rem;
+    }
+
+    .odds-row {
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .odds-column {
+        width: 100%;
+    }
+
+    .odds-subtitle {
+        text-align: center;
+    }
+
+    .odds-button {
+        padding: 0.85rem 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    .over-under-button {
+        padding: 0.85rem 1.25rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - TABLET & BELOW (1024px)
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .bets-container {
+        padding: 1.5rem 1rem;
+        padding-top: 2vh;
+    }
+
+    .bets-wrapper {
+        padding: 1.75rem 1.5rem;
+        border-radius: 20px;
+    }
+
+    .bets-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .bets-title {
+        font-size: 2rem;
+    }
+
+    .bets-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    /* Stack odds into a single centered column */
+    .odds-row {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .odds-column {
+        width: 100%;
+    }
+
+    .odds-subtitle {
+        text-align: center;
+        font-size: 0.8rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .odds-title {
+        text-align: center;
+    }
+
+    /* Over/Under: side by side still works here */
+    .over-under-buttons {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    .over-under-button {
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    /* Range bets: 2-column grid */
+    .odds-range-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .odds-button {
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+    }
+
+    /* Center the place bet section */
+    .place-bet-section {
+        max-width: 500px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .place-bet-title {
+        text-align: center;
+    }
+
+    .bet-amount-label {
+        text-align: center;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE (600px)
+   ============================================ */
+
+@media (max-width: 600px) {
+    .bets-container {
+        padding: 0.75rem;
+        padding-top: 1vh;
+    }
+
+    .bets-wrapper {
+        padding: 1.25rem 1rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .bets-header {
+        margin-bottom: 1.25rem;
+    }
+
+    .bets-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .bets-title {
+        font-size: 1.6rem;
+    }
+
+    .bets-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .bets-content {
+        gap: 1.5rem;
+    }
+
+    .odds-title {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .odds-row {
+        gap: 1.25rem;
+    }
+
+    /* Over/Under stacks on small phones */
+    .over-under-section {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    .over-under-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .over-under-button {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+    /* Range bets: single column on small screens */
+    .odds-range-list {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+
+    .odds-button {
+        padding: 0.8rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 10px;
+    }
+
+    .place-bet-section {
+        max-width: none;
+    }
+
+    .selected-bet-box,
+    .no-selection-warning,
+    .payout-box {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    .selected-bet-row {
+        font-size: 0.85rem;
+    }
+
+    .bet-amount-input {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+
+    .payout-amount {
+        font-size: 1.5rem;
+    }
+
+    .place-bet-button {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+        border-radius: 10px;
+    }
+}
+
+/* ============================================
+   BETS LIST SECTION
+   ============================================ */
+
+.bets-list-section {
+    margin-top: 2rem;
+    opacity: 0;
+    animation: slideUpChild 0.5s ease-out forwards;
+    animation-delay: 0.3s;
+}
+
+.bets-list-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: rgba(184, 193, 236, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.bets-list-loading,
+.bets-list-empty {
+    background: rgba(102, 126, 234, 0.06);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    color: #8892b0;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   TABLE
+   ============================================ */
+
+.bets-list-table-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    background: rgba(102, 126, 234, 0.04);
+}
+
+.bets-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+}
+
+.bets-list-table thead th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: rgba(184, 193, 236, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.12);
+    background: rgba(102, 126, 234, 0.06);
+    white-space: nowrap;
+}
+
+.bets-list-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.bets-list-table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.08);
+}
+
+.bets-list-table tbody td {
+    padding: 0.75rem 1rem;
+    color: #e2e8f0;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.06);
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.bets-list-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================
+   STATUS BADGES
+   ============================================ */
+
+.bet-status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.bet-status-badge.bet-status-pending {
+    background: rgba(250, 204, 21, 0.12);
+    color: #facc15;
+    border: 1px solid rgba(250, 204, 21, 0.25);
+}
+
+.bet-status-badge.bet-status-won {
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.25);
+}
+
+.bet-status-badge.bet-status-lost {
+    background: rgba(248, 113, 113, 0.12);
+    color: #f87171;
+    border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+/* ============================================
+   COIN BALANCE & SESSION WARNING
+   ============================================ */
+
+.coin-balance-box {
+    background: rgba(250, 204, 21, 0.08);
+    border: 1px solid rgba(250, 204, 21, 0.2);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #facc15;
+}
+
+.coin-balance-amount {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.session-active-warning {
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f87171;
+}
+
+.insufficient-coins-warning {
+    display: block;
+    margin-top: 0.5rem;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #f87171;
+    text-align: center;
+}
+
+/* ============================================
+   BETS LIST - RESPONSIVE (1024px)
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .bets-list-section {
+        margin-top: 1.75rem;
+    }
+
+    .bets-list-table {
+        font-size: 0.82rem;
+    }
+
+    .bets-list-table thead th {
+        padding: 0.75rem 0.85rem;
+    }
+
+    .bets-list-table tbody td {
+        padding: 0.7rem 0.85rem;
+    }
+}
+
+/* ============================================
+   BETS LIST - RESPONSIVE MOBILE (600px)
+   ============================================ */
+
+@media (max-width: 600px) {
+    .bets-list-section {
+        margin-top: 1.5rem;
+    }
+
+    .bets-list-table-wrapper {
+        border-radius: 12px;
+    }
+
+    .bets-list-table {
+        font-size: 0.78rem;
+    }
+
+    .bets-list-table thead th {
+        padding: 0.65rem 0.6rem;
+        font-size: 0.65rem;
+    }
+
+    .bets-list-table tbody td {
+        padding: 0.6rem;
+    }
+
+    .bet-status-badge {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.65rem;
+    }
+
+    .coin-balance-box {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.88rem;
+        border-radius: 10px;
+    }
+
+    .session-active-warning {
+        padding: 0.6rem 0.85rem;
+        font-size: 0.8rem;
+        border-radius: 10px;
+    }
+}

@@ -1,0 +1,396 @@
+
+.navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 240px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.navbar-brand {
+    padding: 0 1.5rem 1rem;
+}
+
+.navbar-brand h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.5px;
+}
+
+.navbar-divider {
+    height: 1px;
+    background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(102, 126, 234, 0.3) 50%,
+    transparent 100%
+    );
+    margin: 0.75rem 1rem;
+}
+
+.navbar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    flex: 0.95;
+}
+
+.navbar-item {
+    margin: 0;
+}
+
+.navbar-link {
+    display: block;
+    padding: 0.875rem 1.5rem;
+    color: #b8c1ec;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.navbar-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+    transform: translateX(-4px);
+    transition: transform 0.2s ease;
+}
+
+.navbar-link:hover {
+    color: #fff;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.navbar-link:hover::before {
+    transform: translateX(0);
+}
+
+.navbar-auth {
+    padding: 0.5rem 0;
+}
+
+.navbar-auth-link {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    color: #b8c1ec;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 0.25rem 1rem;
+}
+
+.navbar-auth-link:hover {
+    color: #fff;
+    background: rgba(102, 126, 234, 0.15);
+}
+
+.navbar-account {
+    position: relative;
+    padding: 0 1rem;
+}
+
+.navbar-account-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.75rem 0.85rem;
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.navbar-account-trigger:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+}
+
+/* Username styling */
+.navbar-account-trigger > span:first-child {
+    flex-shrink: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+/* Coins Badge Styling */
+.navbar-coins {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem;
+    background: linear-gradient(135deg, rgba(240, 192, 64, 0.2) 0%, rgba(255, 215, 0, 0.15) 100%);
+    border: 1.5px solid rgba(240, 192, 64, 0.4);
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #ffd700;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    animation: coinShine 3s ease-in-out infinite;
+}
+
+.navbar-account-trigger:hover .navbar-coins {
+    background: linear-gradient(135deg, rgba(240, 192, 64, 0.3) 0%, rgba(255, 215, 0, 0.25) 100%);
+    border-color: rgba(240, 192, 64, 0.6);
+    transform: scale(1.05);
+}
+
+.navbar-coins svg {
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+    animation: coinFloat 3s ease-in-out infinite;
+}
+
+@keyframes coinShine {
+    0%, 100% {
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 16px rgba(255, 215, 0, 0.4), 0 0 24px rgba(255, 215, 0, 0.2);
+    }
+}
+
+@keyframes coinFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+.navbar-account-icon {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.navbar-account-icon.open {
+    transform: rotate(180deg);
+}
+
+.navbar-dropdown {
+    list-style: none;
+    margin: 0.5rem 0 0 0;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.navbar-dropdown-item {
+    margin: 0;
+}
+
+.navbar-dropdown-link {
+    display: block;
+    padding: 0.625rem 1rem;
+    color: #b8c1ec;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.navbar-dropdown-link:hover {
+    color: #fff;
+    background: rgba(102, 126, 234, 0.15);
+}
+
+/* Hide mobile-only elements on desktop */
+.mobile-banner {
+    display: none;
+}
+
+.navbar-toggle {
+    display: none;
+}
+
+/* Mobile Navbar Behavior */
+@media (max-width: 768px) {
+    .navbar {
+        right: 0;
+        left: auto;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        width: 160px;
+        padding: 4rem 0 2rem;
+    }
+
+    .navbar-brand {
+        display: none;
+    }
+
+    .navbar.open {
+        transform: translateX(0);
+        width: 210px;
+    }
+
+    .navbar-toggle {
+        display: block;
+        position: fixed;
+        top: 1rem;
+        right: 0.75rem;
+        z-index: 1102;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: #fff;
+        font-size: 1.25rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        transition: transform 0.3s ease;
+        width: 50px;
+    }
+
+    .navbar-toggle.open {
+        transform: rotate(90deg);
+    }
+
+    .navbar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0.5rem 0;
+        flex: 0;
+    }
+
+    .navbar-link {
+        margin-left: 0;
+        width: auto;
+        scale: 1;
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .navbar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 900;
+    }
+
+    .mobile-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4rem;
+        background: linear-gradient(180deg, #1a1a2e 25%, #16213e 100%);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+        z-index: 1101;
+        transition: all 0.3s ease;
+        transform: translateX(0);
+    }
+
+    .mobile-banner.collapsed {
+        transform: translateX(100%);
+    }
+
+    .mobile-banner h1 {
+        font-size: 1.4rem;
+        transition: opacity 0.3s ease;
+    }
+
+    .mobile-banner.collapsed h1 {
+        opacity: 0;
+    }
+
+    /* Compact account section on mobile */
+    .navbar-account {
+        padding: 0 0.5rem;
+    }
+
+    .navbar-account-trigger {
+        padding: 0.6rem 0.7rem;
+        font-size: 0.75rem;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        min-height: auto;
+    }
+
+    .navbar-account-trigger > span:first-child {
+        font-size: 0.8rem;
+        max-width: 100%;
+        flex-basis: 100%;
+        text-align: left;
+        margin-bottom: 0.3rem;
+    }
+
+    /* Smaller coins badge on mobile - full width */
+    .navbar-coins {
+        padding: 0.3rem 0.5rem;
+        gap: 0.3rem;
+        font-size: 0.7rem;
+        border-width: 1px;
+        flex-basis: 100%;
+        justify-content: center;
+    }
+
+    .navbar-coins svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Move dropdown arrow to top right */
+    .navbar-account-icon {
+        position: absolute;
+        top: 0.6rem;
+        right: 0.7rem;
+        width: 12px;
+        height: 12px;
+    }
+
+    .navbar-dropdown-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    .navbar-auth-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+        margin: 0.15rem 0.5rem;
+    }
+    
+    .navbar-auth {
+        padding: 0.5rem 0;
+        margin-top: 0;
+    }
+}

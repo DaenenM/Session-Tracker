@@ -1,0 +1,304 @@
+/* src/css/Leaderboard.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+/* ============================================
+   CONTAINER & LAYOUT
+   ============================================ */
+
+.leaderboard-container {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2vh;
+    animation: lbPageFadeIn 0.6s ease-out both;
+}
+
+@keyframes lbPageFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.leaderboard-wrapper {
+    background: rgba(26, 26, 46, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    max-width: 700px;
+    width: 100%;
+    animation: lbSlideUp 0.6s ease-out;
+}
+
+@keyframes lbSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.leaderboard-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: lbSlideUpChild 0.5s ease-out forwards;
+    animation-delay: 0.1s;
+}
+
+.leaderboard-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+    color: #fff;
+}
+
+.leaderboard-subtitle {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    color: #8892b0;
+    margin: 0;
+}
+
+@keyframes lbSlideUpChild {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   LOADING & EMPTY
+   ============================================ */
+
+.leaderboard-loading,
+.leaderboard-empty {
+    background: rgba(102, 126, 234, 0.06);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    color: #8892b0;
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   TABLE
+   ============================================ */
+
+.leaderboard-table-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    background: rgba(102, 126, 234, 0.04);
+    opacity: 0;
+    animation: lbSlideUpChild 0.5s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+}
+
+.leaderboard-table thead th {
+    padding: 0.85rem 1.25rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.7rem;
+    color: rgba(184, 193, 236, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.12);
+    background: rgba(102, 126, 234, 0.06);
+    white-space: nowrap;
+}
+
+.leaderboard-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.leaderboard-table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.08);
+}
+
+.leaderboard-table tbody td {
+    padding: 0.85rem 1.25rem;
+    color: #e2e8f0;
+    border-bottom: 1px solid rgba(102, 126, 234, 0.06);
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.leaderboard-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================
+   RANK COLUMN
+   ============================================ */
+
+.leaderboard-rank {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: center;
+    width: 60px;
+}
+
+/* ============================================
+   NAME COLUMN
+   ============================================ */
+
+.leaderboard-name {
+    font-weight: 600;
+    color: #fff;
+}
+
+.leaderboard-you-tag {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: rgba(102, 126, 234, 0.2);
+    color: #667eea;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    vertical-align: middle;
+}
+
+/* ============================================
+   COINS & LEVEL COLUMNS
+   ============================================ */
+
+.leaderboard-coins {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: #facc15;
+}
+
+.leaderboard-level {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* ============================================
+   TOP 3 ROW HIGHLIGHTS
+   ============================================ */
+
+.leaderboard-row-top1 {
+    background: rgba(250, 204, 21, 0.06);
+}
+
+.leaderboard-row-top1:hover {
+    background: rgba(250, 204, 21, 0.1) !important;
+}
+
+.leaderboard-row-top1 .leaderboard-name {
+    color: #facc15;
+}
+
+.leaderboard-row-top2 {
+    background: rgba(192, 192, 192, 0.04);
+}
+
+.leaderboard-row-top2:hover {
+    background: rgba(192, 192, 192, 0.08) !important;
+}
+
+.leaderboard-row-top3 {
+    background: rgba(205, 127, 50, 0.04);
+}
+
+.leaderboard-row-top3:hover {
+    background: rgba(205, 127, 50, 0.08) !important;
+}
+
+/* ============================================
+   CURRENT USER ROW
+   ============================================ */
+
+.leaderboard-row-you {
+    border-left: 3px solid #667eea;
+}
+
+/* ============================================
+   RESPONSIVE - TABLET (1024px)
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .leaderboard-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .leaderboard-wrapper {
+        padding: 1.75rem 1.5rem;
+        border-radius: 20px;
+    }
+
+    .leaderboard-title {
+        font-size: 2rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE (600px)
+   ============================================ */
+
+@media (max-width: 600px) {
+    .leaderboard-container {
+        padding: 0.75rem;
+        padding-top: 1vh;
+    }
+
+    .leaderboard-wrapper {
+        padding: 1.25rem 1rem;
+        border-radius: 16px;
+    }
+
+    .leaderboard-title {
+        font-size: 1.6rem;
+    }
+
+    .leaderboard-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .leaderboard-table-wrapper {
+        border-radius: 12px;
+    }
+
+    .leaderboard-table {
+        font-size: 0.82rem;
+    }
+
+    .leaderboard-table thead th {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.65rem;
+    }
+
+    .leaderboard-table tbody td {
+        padding: 0.7rem 0.75rem;
+    }
+
+    .leaderboard-rank {
+        font-size: 1rem;
+        width: 45px;
+    }
+
+    .leaderboard-you-tag {
+        font-size: 0.6rem;
+        padding: 0.1rem 0.35rem;
+    }
+}

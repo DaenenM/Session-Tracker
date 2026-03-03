@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+/* ============================================
+   STATS CONTAINER
+   ============================================ */
+
+.stats-container {
+    min-height: 100vh;
+    padding: 2rem 2rem 1rem;
+    animation: statsFadeIn 0.6s ease-out both;
+}
+
+.stats-content {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+@keyframes statsFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.stats-loading {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================
+   TITLE
+   ============================================ */
+
+.stats-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.25rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-clip: text;
+    opacity: 0;
+    animation: statsSlideUp 0.5s ease-out forwards;
+    animation-delay: 0.1s;
+}
+
+@keyframes statsSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   STAT CARDS
+   ============================================ */
+
+.stats-cards-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    opacity: 0;
+    animation: statsSlideUp 0.5s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+.stats-cards-row:nth-child(3) {
+    animation-delay: 0.3s;
+    margin-bottom: 2rem;
+}
+
+.stats-card {
+    background: rgba(26, 26, 46, 0.7);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 14px;
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+    transition: all 0.25s ease;
+}
+
+.stats-card:hover {
+    border-color: rgba(102, 126, 234, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stats-card-highlight {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+    border-color: rgba(102, 126, 234, 0.35);
+}
+
+.stats-card-icon {
+    font-size: 1.25rem;
+    margin-bottom: 0.15rem;
+}
+
+.stats-card-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(184, 193, 236, 0.5);
+}
+
+.stats-card-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+}
+
+.stats-card-highlight .stats-card-value {
+    background: linear-gradient(135deg, #667eea 0%, #c084fc 100%);
+    background-clip: text;
+}
+
+.stats-card-unit {
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.6;
+}
+
+/* ============================================
+   TABLE
+   ============================================ */
+
+.stats-table-wrapper {
+    background: rgba(26, 26, 46, 0.6);
+    border: 1px solid rgba(102, 126, 234, 0.12);
+    border-radius: 16px;
+    overflow: hidden;
+    opacity: 0;
+    animation: statsSlideUp 0.5s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Work Sans', sans-serif;
+}
+
+/* Header */
+.stats-table thead tr {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.stats-table th {
+    padding: 0.85rem 1.25rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+}
+
+.stats-table th:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.stats-table th span {
+    margin-right: 0.3rem;
+}
+
+.sort-arrow {
+    font-size: 0.7rem;
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.sort-arrow.inactive {
+    opacity: 0.35;
+}
+
+.sort-arrow.active {
+    opacity: 1;
+    color: #fbbf24;
+}
+
+/* Rows */
+.stats-table tbody tr {
+    border-bottom: 1px solid rgba(102, 126, 234, 0.08);
+    transition: background 0.2s ease;
+}
+
+.stats-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.stats-table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.06);
+}
+
+.stats-table td {
+    padding: 0.85rem 1.25rem;
+    font-size: 0.9rem;
+    color: #b8c1ec;
+}
+
+.count-cell {
+    font-weight: 700;
+    color: #fff;
+}
+
+.avg-cell {
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* Class type badges */
+.class-badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.class-badge.in-person {
+    background: rgba(102, 126, 234, 0.15);
+    color: #8b9cf7;
+    border: 1px solid rgba(102, 126, 234, 0.25);
+}
+
+.class-badge.online {
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ade80;
+    border: 1px solid rgba(74, 222, 128, 0.25);
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.stats-empty {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: rgba(26, 26, 46, 0.5);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    border-radius: 16px;
+    opacity: 0;
+    animation: statsSlideUp 0.5s ease-out forwards;
+    animation-delay: 0.4s;
+}
+
+.stats-empty-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.stats-empty p {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    color: #b8c1ec;
+    margin: 0;
+}
+
+.stats-empty-sub {
+    font-size: 0.85rem !important;
+    color: rgba(184, 193, 236, 0.5) !important;
+    margin-top: 0.35rem !important;
+}
+
+/* ============================================
+   RESPONSIVE - DESKTOP (1024px+)
+   ============================================ */
+
+@media (min-width: 1024px) {
+    .stats-title {
+        font-size: 1.875rem;
+    }
+
+    .stats-card-value {
+        font-size: 1.5rem;
+    }
+
+    .stats-card {
+        padding: 1rem 0.75rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - TABLET (768px)
+   ============================================ */
+
+@media (max-width: 768px) {
+    .stats-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .stats-cards-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-table th,
+    .stats-table td {
+        padding: 0.7rem 0.85rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE (480px)
+   ============================================ */
+
+@media (max-width: 480px) {
+    .stats-container {
+        padding: 1rem 0.5rem;
+    }
+
+    .stats-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .stats-cards-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .stats-card {
+        padding: 0.85rem 0.5rem;
+    }
+
+    .stats-card-value {
+        font-size: 1.25rem;
+    }
+
+    .stats-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .stats-table {
+        min-width: 520px;
+    }
+
+    .stats-table th,
+    .stats-table td {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.78rem;
+    }
+}

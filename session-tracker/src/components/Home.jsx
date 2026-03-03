@@ -1,0 +1,140 @@
+import { useState, useEffect } from 'react';
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from '../firebase';
+import { calculateLevel } from '../utils/leveling';
+import CrateOpener from './CrateOpener';
+import '../css/Home.css';
+import StyledName from './StyledName';
+
+export default function HomePage({ onNavigate }) {
+  const [levelData, setLevelData] = useState(null);
+  const [showCrate, setShowCrate] = useState(false);
+
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          const totalXp = data.xp ?? 0;
+          setLevelData(calculateLevel(totalXp));
+        }
+      } catch (err) {
+        console.error("Failed to fetch user stats:", err);
+      }
+    };
+
+    fetchUserStats();
+  }, []);
+
+  const xpProgress = levelData
+    ? (levelData.currentXp / levelData.xpForNextLevel) * 100
+    : 0;
+
+  const features = [
+    {
+      icon: '📡',
+      title: 'Live',
+      description: 'Watch sessions unfold in real time. See counts and timers update live.',
+      path: '/live',
+      accent: '#4ade80',
+    },
+    {
+      icon: '📊',
+      title: 'Stats',
+      description: 'Dive into your performance data. Trends, averages, and insights.',
+      path: '/stats',
+      accent: '#fbbf24',
+    },
+    {
+      icon: '🎲',
+      title: 'Bets',
+      description: 'Put your predictions on the line. Compete with confidence.',
+      path: '/bets',
+      accent: '#f87171',
+    },
+    {
+      icon: '🏆',
+      title: 'Leaderboard',
+      description: 'See where you rank among the community. Climb to the top.',
+      path: '/leaderboard',
+      accent: '#c084fc',
+    },
+  ];
+
+  return (
+    <div className="home-container">
+      <div className="home-content">
+
+        <section className="hero-section">
+          <div className="hero-badge">Welcome back</div>
+          <h1 className="hero-title">
+            The Essentially Session Tracker<span className="hero-dot">.</span>
+          </h1>
+          <p className="hero-subtitle">
+            Your session tracking count, compete in real time, and climb the ranks.
+          </p>
+          <div className="hero-actions">
+            <button className="hero-btn hero-btn-primary" onClick={() => onNavigate?.('/live')}>
+              Watch Live
+              <span className="hero-btn-arrow">→</span>
+            </button>
+            <button className="hero-btn hero-btn-secondary" onClick={() => setShowCrate(true)}>
+              🎁 Open Crate
+            </button>
+          </div>
+        </section>
+
+        <h2 className="section-title">Level & Active Bets</h2>
+        <section className="stats-bar">
+          <div className="stat-item">
+            <span className="stat-number">{levelData?.level ?? '—'}</span>
+            <span className="stat-label">Level</span>
+          </div>
+          <div className="stat-divider"></div>
+          <div className="stat-item">
+            <span className="stat-number">0</span>
+            <span className="stat-label">Active Bets</span>
+          </div>
+        </section>
+
+        {levelData && (
+          <section className="xp-bar-section">
+            <div className="xp-bar-header">
+              <span className="xp-level-label">Level {levelData.level}</span>
+              <span className="xp-count">{levelData.currentXp} / {levelData.xpForNextLevel} XP</span>
+            </div>
+            <div className="xp-bar-track">
+              <div className="xp-bar-fill" style={{ width: `${xpProgress}%` }} />
+            </div>
+          </section>
+        )}
+
+        <section className="features-section">
+          <h2 className="section-title">Explore</h2>
+          <div className="features-grid">
+            {features.map((feature, index) => (
+              <button
+                key={feature.path}
+                className="feature-card"
+                style={{ '--accent': feature.accent, animationDelay: `${0.1 + index * 0.08}s` }}
+                onClick={() => onNavigate?.(feature.path)}
+              >
+                <div className="feature-icon">{feature.icon}</div>
+                <h3 className="feature-title">{feature.title}</h3>
+                <p className="feature-desc">{feature.description}</p>
+                <span className="feature-arrow">→</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+      </div>
+
+      {showCrate && <CrateOpener onClose={() => setShowCrate(false)} />}
+    </div>
+  );
+}
