@@ -4,6 +4,7 @@ import { doc, runTransaction, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { rollCrate, generateReelStrip, getRarityColor } from '../utils/crateRewards';
+import { calculateLevel } from '../utils/leveling';
 import '../css/Crate.css';
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
@@ -21,7 +22,7 @@ export default function CrateOpener({ onClose }) {
     const [loading, setLoading] = useState(true);
     const reelRef = useRef(null);
 
-    // Check cooldown
+    // Check cooldown on mount
     useEffect(() => {
         if (!user) return;
 
@@ -75,6 +76,7 @@ export default function CrateOpener({ onClose }) {
     const handleOpen = () => {
         if (!canOpen || state !== 'ready') return;
 
+        // Roll the reward and generate the visual reel strip
         const reward = rollCrate();
         const strip = generateReelStrip(reward, 40, WIN_INDEX);
 
@@ -82,13 +84,10 @@ export default function CrateOpener({ onClose }) {
         setReelStrip(strip);
         setState('spinning');
 
-        // Calculate scroll distance to center the winning item
-        // Scroll so the winning item is centered under the pointer
-        // Each item is ITEM_WIDTH + ITEM_GAP apart
-        // We want the CENTER of the winning item to align with the center of the window
+        // Scroll so the winning item lands centered under the pointer
         const scrollTo = (WIN_INDEX * (ITEM_WIDTH + ITEM_GAP)) + (ITEM_WIDTH / 2);
 
-        // Start the animation after a tick
+        // Animate the reel
         requestAnimationFrame(() => {
             if (reelRef.current) {
                 reelRef.current.style.transition = 'none';
@@ -103,7 +102,7 @@ export default function CrateOpener({ onClose }) {
             }
         });
 
-        // Land after animation
+        // Switch to landed state after animation completes
         setTimeout(() => {
             setState('landed');
         }, 4200);
@@ -122,17 +121,37 @@ export default function CrateOpener({ onClose }) {
                 const data = userSnap.data();
                 const updates = { lastCrateOpened: Date.now() };
 
+                // Base 10 XP just for opening a crate
+                let xpGain = 10;
+
                 if (winningReward.type === 'coins') {
+                    // Coin reward — add directly to balance
                     updates.coins = (data.coins || 0) + winningReward.value;
+                } else if (winningReward.type === 'xp') {
+                    // XP reward — stacks with the base 10 XP
+                    xpGain += winningReward.value;
                 } else if (winningReward.type === 'shopItem') {
                     const owned = data.ownedItems || [];
                     if (owned.includes(winningReward.shopId)) {
-                        // Already owned — give coin equivalent instead
+                        // Already owned — refund coins based on rarity
                         const coinRefund = Math.floor(winningReward.weight * 15) + 25;
                         updates.coins = (data.coins || 0) + coinRefund;
                     } else {
+                        // New item — add to owned inventory
                         updates.ownedItems = [...owned, winningReward.shopId];
                     }
+                }
+
+                // Apply XP and check for level-up coin bonus (+100 per level gained)
+                const currentXp = data.xp || 0;
+                const newXp = currentXp + xpGain;
+                const oldLevel = calculateLevel(currentXp).level;
+                const newLevel = calculateLevel(newXp).level;
+                const levelUpBonus = (newLevel - oldLevel) * 100;
+
+                updates.xp = newXp;
+                if (levelUpBonus > 0) {
+                    updates.coins = (updates.coins ?? data.coins ?? 0) + levelUpBonus;
                 }
 
                 transaction.update(userDocRef, updates);
@@ -201,7 +220,7 @@ export default function CrateOpener({ onClose }) {
                 {state === 'claimed' && winningReward && (
                     <div className="crate-reward-reveal crate-reward-claimed" style={{ '--rarity-color': getRarityColor(winningReward.rarity) }}>
                         <span className="crate-reward-label">{winningReward.label}</span>
-                        <span className="crate-reward-rarity">Added to your account!</span>
+                        <span className="crate-reward-rarity">Added to your account! (+10 XP)</span>
                     </div>
                 )}
 
