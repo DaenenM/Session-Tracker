@@ -1,16 +1,37 @@
 // src/components/SessionTracker.jsx
 import { useState, useEffect, useRef } from "react";
-import { collection, addDoc, collectionGroup, getDocs, doc, writeBatch } from "firebase/firestore";
-import { db } from "../firebase";
-import { useAuth } from "../context/AuthContext";
-import { getDatabase, ref, set, remove } from "firebase/database";
-import Counter from "./session-cards/Counter";
-import Timer from "./session-cards/Timer";
-import ClassType from "./session-cards/ClassType";
-import CurrentAvg from "./session-cards/CurrentAvg";
 
-const rtdb = getDatabase();
+// Firestore imports for database operations
+import {
+    collection,       // Reference a Firestore collection (e.g., 'sessions')
+    addDoc,           // Add a new document to a collection
+    collectionGroup,  // Query across ALL subcollections with the same name (e.g., all 'bets' under every user)
+    getDocs,          // Fetch all documents from a query once (not real-time)
+    doc,              // Reference a specific document by path (e.g., 'users/abc123')
+    writeBatch,       // Group multiple writes into one atomic operation (all succeed or all fail)
+} from "firebase/firestore";
 
+import { db } from "../firebase";            // Firestore database instance
+import { useAuth } from "../context/AuthContext"; // Auth context for current user info
+
+// Realtime Database imports (separate from Firestore — used for live session syncing)
+import {
+    getDatabase,  // Get the Realtime Database instance
+    ref,          // Create a reference to a path in RTDB (e.g., 'liveSession')
+    set,          // Write data to an RTDB path (overwrites)
+    remove,       // Delete data at an RTDB path
+} from "firebase/database";
+
+// Sub-components for each section of the form
+import Counter from "./session-cards/Counter";       // +/- count input
+import Timer from "./session-cards/Timer";           // Stopwatch with start/stop/reset
+import ClassType from "./session-cards/ClassType";   // In-Person / Online toggle
+import CurrentAvg from "./session-cards/CurrentAvg"; // Live average (count per minute)
+
+const rtdb = getDatabase(); // Initialize Realtime Database
+
+// --- Local Storage helpers ---
+// Backup session data so it survives page refreshes
 const saveToLocal = (data) => {
     localStorage.setItem('session_backup', JSON.stringify(data));
 };
@@ -28,6 +49,10 @@ const loadFromLocal = () => {
     }
 };
 
+// --- Bet Resolution Logic ---
+
+// Checks if a bet's range matches the final count
+// Supports: "0–10" (range), "Over 42.5", "Under 42.5"
 const isWinningBet = (range, finalCount) => {
     if (range.toLowerCase().startsWith('over')) {
         const threshold = parseFloat(range.split(' ')[1]);
@@ -38,6 +63,7 @@ const isWinningBet = (range, finalCount) => {
         return finalCount < threshold;
     }
 
+    // Range bets like "0–10" or "11-20" (handles both dash types)
     const parts = range.split(/[–\-]/);
     if (parts.length === 2) {
         const low = parseFloat(parts[0].trim());
@@ -48,7 +74,10 @@ const isWinningBet = (range, finalCount) => {
     return false;
 };
 
+// Resolves ALL pending bets when a session is saved
+// Marks each as 'won' or 'lost' and credits winners' coins
 const resolveBets = async (finalCount) => {
+    // collectionGroup('bets') fetches bets from ALL users at once
     const betsSnapshot = await getDocs(collectionGroup(db, 'bets'));
     const pendingBets = betsSnapshot.docs.filter(
         (d) => d.data().status === 'pending'
@@ -59,15 +88,17 @@ const resolveBets = async (finalCount) => {
     let winners = 0;
     let losers = 0;
 
+    // Firestore batches max out at 500 operations, so we chunk
     const batchSize = 500;
     for (let i = 0; i < pendingBets.length; i += batchSize) {
         const chunk = pendingBets.slice(i, i + batchSize);
-        const batch = writeBatch(db);
+        const batch = writeBatch(db); // Atomic batch — all updates commit together
 
         for (const betDoc of chunk) {
             const bet = betDoc.data();
             const won = isWinningBet(bet.range, finalCount);
 
+            // Update the bet document status
             batch.update(betDoc.ref, {
                 status: won ? 'won' : 'lost',
                 finalCount: finalCount,
@@ -76,8 +107,10 @@ const resolveBets = async (finalCount) => {
 
             if (won) {
                 winners++;
+                // betDoc.ref.parent = 'bets' collection, .parent = user document
                 const userId = betDoc.ref.parent.parent.id;
                 const userRef = doc(db, 'users', userId);
+                // Add winnings to the user's coin balance
                 batch.update(userRef, {
                     coins: (bet.potentialPayout || 0) + (await getCoins(userId)),
                 });
@@ -86,12 +119,13 @@ const resolveBets = async (finalCount) => {
             }
         }
 
-        await batch.commit();
+        await batch.commit(); // Execute all updates in this batch
     }
 
     return { winners, losers };
 };
 
+// Helper: fetch a user's current coin balance (needed for batch payouts)
 const getCoins = async (userId) => {
     const { getDoc } = await import('firebase/firestore');
     const userSnap = await getDoc(doc(db, 'users', userId));
@@ -99,20 +133,23 @@ const getCoins = async (userId) => {
 };
 
 export default function SessionTracker() {
-    const { user } = useAuth();
-    const [saveStatus, setSaveStatus] = useState(null);
+    const { user } = useAuth();           // Current logged-in user
+    const [saveStatus, setSaveStatus] = useState(null); // 'saving' | 'saved' | 'error' | null
 
-    const backup = loadFromLocal();
+    const backup = loadFromLocal(); // Restore any unsaved session data
 
     const [count, setCount] = useState(backup?.count ?? 0);
     const [classType, setClassType] = useState(backup?.classType ?? "");
     const [isRunning, setIsRunning] = useState(false);
     const [time, setTime] = useState(backup?.sessionTime ?? 0);
+
+    // Refs keep values accessible inside intervals/callbacks without re-renders
     const intervalRef = useRef(null);
     const isRunningRef = useRef(false);
     const timeRef = useRef(backup?.sessionTime ?? 0);
     const sessionStartedAtRef = useRef(null);
 
+    // Keep ref and state in sync (ref for intervals, state for UI)
     const setIsRunningSync = (val) => {
         isRunningRef.current = val;
         setIsRunning(val);
@@ -120,10 +157,12 @@ export default function SessionTracker() {
 
     useEffect(() => { timeRef.current = time; }, [time]);
 
+    // Calculate elapsed time from a start point
     const calcTime = (sessionTime, startedAt) => {
         return sessionTime + Math.floor((Date.now() - startedAt) / 1000);
     };
 
+    // Sync session data to both Realtime Database (for live viewers) and localStorage (for backup)
     const syncAll = (overrides = {}) => {
         const data = {
             count,
@@ -133,6 +172,7 @@ export default function SessionTracker() {
             running: isRunningRef.current,
             ...overrides,
         };
+        // Push to RTDB so LiveView can show it in real-time
         set(ref(rtdb, 'liveSession'), {
             count: data.count,
             classType: data.classType,
@@ -140,6 +180,7 @@ export default function SessionTracker() {
             sessionStartedAt: data.sessionStartedAt,
             running: data.running,
         });
+        // Save to localStorage as crash recovery backup
         saveToLocal({
             count: data.count,
             classType: data.classType,
@@ -147,8 +188,10 @@ export default function SessionTracker() {
         });
     };
 
+    // Re-sync whenever count or classType changes
     useEffect(() => { syncAll(); }, [count, classType]);
 
+    // Timer tick — runs every second while active
     useEffect(() => {
         if (isRunning) {
             intervalRef.current = setInterval(() => {
@@ -187,6 +230,7 @@ export default function SessionTracker() {
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
+    // Save session to Firestore and resolve all pending bets
     const handleSave = async (e) => {
         e.preventDefault();
         if (!user || (count === 0 && time === 0)) return;
@@ -201,6 +245,7 @@ export default function SessionTracker() {
 
         setSaveStatus('saving');
         try {
+            // 1. Save session record to Firestore
             await addDoc(collection(db, 'sessions'), {
                 userId: user.uid,
                 userName: user.displayName || 'Unknown',
@@ -213,15 +258,17 @@ export default function SessionTracker() {
                 avgPerMin,
             });
 
+            // 2. Resolve all pending bets based on final count
             const { winners, losers } = await resolveBets(finalCount);
             console.log(`Bets resolved: ${winners} winners, ${losers} losers (final count: ${finalCount})`);
 
+            // 3. Reset everything
             setSaveStatus('saved');
             setCount(0);
             setTime(0);
             setClassType('');
             clearLocal();
-            remove(ref(rtdb, 'liveSession'));
+            remove(ref(rtdb, 'liveSession')); // Clear live session from RTDB
             setTimeout(() => setSaveStatus(null), 2000);
         } catch (err) {
             console.error('Failed to save session:', err);
