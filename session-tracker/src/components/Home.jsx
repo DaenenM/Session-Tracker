@@ -7,8 +7,11 @@ import { db, auth } from '../firebase';               // Firestore + Auth instan
 import { calculateLevel } from '../utils/leveling';   // Derives level, currentXp, xpForNextLevel from total XP
 import CrateOpener from './CrateOpener';               // Daily crate modal with spinning reel
 import '../css/Home.css';
+import useActiveBets from '../utils/useActiveBets';
 
 export default function HomePage({ onNavigate }) {
+
+  const activeBetCount = useActiveBets();
   // Level data derived from total XP — { level, currentXp, xpForNextLevel }
   const [levelData, setLevelData] = useState(null);
 
@@ -94,6 +97,11 @@ export default function HomePage({ onNavigate }) {
             <button className="hero-btn hero-btn-secondary" onClick={() => setShowCrate(true)}>
               🎁 Open Crate
             </button>
+
+            <button className="hero-btn hero-btn-secondary" onClick={() => onNavigate?.('/shop')}>
+              Shop
+              <span className="hero-btn-arrow">→</span>
+            </button>
           </div>
         </section>
 
@@ -106,9 +114,8 @@ export default function HomePage({ onNavigate }) {
           </div>
           <div className="stat-divider"></div>
           <div className="stat-item">
-            {/* TODO: Hook up to real pending bets count */}
-            <span className="stat-number">0</span>
-            <span className="stat-label">Active Bets</span>
+              <span className="stat-number">{activeBetCount}</span>
+              <span className="stat-label">Active Bets</span>
           </div>
         </section>
 

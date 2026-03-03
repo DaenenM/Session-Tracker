@@ -1,25 +1,23 @@
-// src/components/home-cards/ActiveBets.jsx
-// Displays the current user's pending bet count — used on the Home page stats bar
+// src/hooks/useActiveBets.js
+// Returns the current user's pending bet count in real-time
 
 import { useState, useEffect } from 'react';
 import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { useAuth } from '../../context/AuthContext';
+import { db } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 
-export default function ActiveBets() {
+export default function useActiveBets() {
     const { user } = useAuth();
     const [count, setCount] = useState(0);
 
-    // Listen to only THIS user's pending bets (not all users)
     useEffect(() => {
         if (!user) return;
 
-        // Query the user's bets subcollection for pending bets
         const betsRef = collection(db, 'users', user.uid, 'bets');
         const pendingQuery = query(betsRef, where('status', '==', 'pending'));
 
         const unsubscribe = onSnapshot(pendingQuery, (snapshot) => {
-            setCount(snapshot.size); // .size = number of documents matching
+            setCount(snapshot.size);
         });
 
         return () => unsubscribe();
