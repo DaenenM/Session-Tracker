@@ -1,4 +1,8 @@
 // src/components/session-cards/ClassType.jsx
+// Toggle between In-Person and Online class types
+// Acts like radio buttons — only one can be selected at a time
+// Clicking the active one deselects it (sets classType to "")
+
 export default function ClassType({ classType, setClassType }) {
     return (
         <div className="form-group">
