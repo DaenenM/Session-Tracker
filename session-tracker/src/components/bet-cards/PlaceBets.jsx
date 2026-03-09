@@ -56,17 +56,8 @@ export default function PlaceBet({ selectedBet }) {
                 userNameColor = userData.nameColor || null;
                 userNameEmoji = userData.nameEmoji || null;
 
-                const currentXp = userData.xp || 0;
-                const xpGain = getXpForBet(amount);
-                const newXp = currentXp + xpGain;
-
-                const oldLevel = calculateLevel(currentXp).level;
-                const newLevel = calculateLevel(newXp).level;
-                const levelUpBonus = (newLevel - oldLevel) * 100;
-
                 transaction.update(userDocRef, {
-                    coins: currentCoins - amount + levelUpBonus,
-                    xp: newXp,
+                    coins: currentCoins - amount,
                 });
             });
 

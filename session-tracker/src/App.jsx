@@ -9,6 +9,7 @@ import './css/Stats.css';
 import './css/Bets.css';
 import './css/Leaderboard.css';
 import './css/Shop.css';
+import './css/UserStats.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Header';
 import HomePage from './components/Home';
@@ -23,6 +24,7 @@ import Settings from './components/Settings';
 import Bets from './components/Bets';
 import Leaderboard from './components/Leaderboard';
 import Shop from './components/Shop';
+import UserStats from './components/UserStats';
 import { getDatabase, ref, set, onDisconnect, onValue, remove } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
@@ -103,6 +105,12 @@ function AppContent() {
           <RouteGuard requiredRole="user" onNavigate={handleNavigate}>
             <Settings onNavigate={handleNavigate} />
           </RouteGuard>
+        );
+      case '/account/stats':
+        return (
+            <RouteGuard onNavigate={handleNavigate}>
+                <UserStats />
+            </RouteGuard>
         );
 
       default:

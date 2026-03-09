@@ -1,18 +1,14 @@
-// src/utils/betResolution.js
-// Handles resolving all pending bets when a session is saved
-// Called by SaveButton after the session is written to Firestore
-
 import {
-    collectionGroup,  // Query all 'bets' subcollections across users
-    getDocs,          // Fetch documents once
-    getDoc,           // Fetch a single document
-    doc,              // Reference a specific document
-    writeBatch,       // Batch multiple writes atomically
+    collectionGroup,
+    getDocs,
+    getDoc,
+    doc,
+    writeBatch,
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import { calculateLevel } from './leveling';
+import { getXpForBet } from './leveling';
 
-// Checks if a bet's range matches the final count
-// Supports: "0–10" (range), "Over 42.5", "Under 42.5"
 export const isWinningBet = (range, finalCount) => {
     if (range.toLowerCase().startsWith('over')) {
         return finalCount > parseFloat(range.split(' ')[1]);
@@ -20,7 +16,6 @@ export const isWinningBet = (range, finalCount) => {
     if (range.toLowerCase().startsWith('under')) {
         return finalCount < parseFloat(range.split(' ')[1]);
     }
-    // Range bets like "0–10" or "11-20" (handles both dash types)
     const parts = range.split(/[–\-]/);
     if (parts.length === 2) {
         const low = parseFloat(parts[0].trim());
@@ -30,16 +25,21 @@ export const isWinningBet = (range, finalCount) => {
     return false;
 };
 
-// Fetch a user's current coin balance (needed for batch payouts)
-const getCoins = async (userId) => {
-    const userSnap = await getDoc(doc(db, 'users', userId));
-    return userSnap.exists() ? (userSnap.data().coins || 0) : 0;
+export const getWinXp = (multiplier) => {
+    if (multiplier >= 10) return 200;
+    if (multiplier >= 5) return 50;
+    if (multiplier >= 3) return 25;
+    return 20;
 };
 
-// Resolves ALL pending bets against the final session count
-// Marks each as 'won' or 'lost' and credits winners' coins
+const getUserData = async (userId) => {
+    const userSnap = await getDoc(doc(db, 'users', userId));
+    if (!userSnap.exists()) return { coins: 0, xp: 0 };
+    const data = userSnap.data();
+    return { coins: data.coins || 0, xp: data.xp || 0 };
+};
+
 export const resolveBets = async (finalCount) => {
-    // collectionGroup('bets') fetches bets from ALL users at once
     const betsSnapshot = await getDocs(collectionGroup(db, 'bets'));
     const pendingBets = betsSnapshot.docs.filter(d => d.data().status === 'pending');
     if (pendingBets.length === 0) return { winners: 0, losers: 0 };
@@ -47,7 +47,6 @@ export const resolveBets = async (finalCount) => {
     let winners = 0;
     let losers = 0;
 
-    // Firestore batches max out at 500 operations, so we chunk
     const batchSize = 500;
     for (let i = 0; i < pendingBets.length; i += batchSize) {
         const chunk = pendingBets.slice(i, i + batchSize);
@@ -56,8 +55,13 @@ export const resolveBets = async (finalCount) => {
         for (const betDoc of chunk) {
             const bet = betDoc.data();
             const won = isWinningBet(bet.range, finalCount);
+            const userId = betDoc.ref.parent.parent.id;
+            const userRef = doc(db, 'users', userId);
+            const userData = await getUserData(userId);
 
-            // Update the bet document status
+            // Everyone gets participation XP based on bet amount
+            const participationXp = getXpForBet(bet.amount);
+
             batch.update(betDoc.ref, {
                 status: won ? 'won' : 'lost',
                 finalCount,
@@ -66,14 +70,31 @@ export const resolveBets = async (finalCount) => {
 
             if (won) {
                 winners++;
-                // Navigate up: betDoc.ref -> 'bets' collection -> parent user document
-                const userId = betDoc.ref.parent.parent.id;
-                const userRef = doc(db, 'users', userId);
+                const multiplier = bet.multiplier || 1;
+                const bonusXp = getWinXp(multiplier);
+                const totalXp = participationXp + bonusXp;
+                const newXp = userData.xp + totalXp;
+
+                const oldLevel = calculateLevel(userData.xp).level;
+                const newLevel = calculateLevel(newXp).level;
+                const levelUpBonus = (newLevel - oldLevel) * 100;
+
                 batch.update(userRef, {
-                    coins: (bet.potentialPayout || 0) + (await getCoins(userId)),
+                    coins: userData.coins + (bet.potentialPayout || 0) + levelUpBonus,
+                    xp: newXp,
                 });
             } else {
                 losers++;
+                const newXp = userData.xp + participationXp;
+
+                const oldLevel = calculateLevel(userData.xp).level;
+                const newLevel = calculateLevel(newXp).level;
+                const levelUpBonus = (newLevel - oldLevel) * 100;
+
+                batch.update(userRef, {
+                    coins: userData.coins + levelUpBonus,
+                    xp: newXp,
+                });
             }
         }
         await batch.commit();
