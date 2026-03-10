@@ -1,6 +1,6 @@
 // src/components/UserStats.jsx
 import { useState, useEffect } from 'react';
-import { collection, getDocs, query, orderBy, getDoc, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, getDoc, doc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { calculateLevel } from '../utils/leveling';
@@ -11,19 +11,27 @@ export default function UserStats() {
     const [wonBets, setWonBets] = useState([]);
     const [lostBets, setLostBets] = useState([]);
     const [pendingBets, setPendingBets] = useState([]);
-    const [xp, setXp] = useState(0);
+    const [levelData, setLevelData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [cancelling, setCancelling] = useState(null); // tracks which bet is being cancelled
+    const [cancelling, setCancelling] = useState(null);
 
+    // Real-time XP listener (same as homepage)
+    useEffect(() => {
+        if (!user) return;
+        const unsubscribe = onSnapshot(doc(db, 'users', user.uid), (docSnap) => {
+            if (docSnap.exists()) {
+                const totalXp = docSnap.data().xp ?? 0;
+                setLevelData(calculateLevel(totalXp));
+            }
+        });
+        return () => unsubscribe();
+    }, [user]);
+
+    // Fetch bets
     useEffect(() => {
         if (!user) return;
 
-        const fetchStats = async () => {
-            const userSnap = await getDoc(doc(db, 'users', user.uid));
-            if (userSnap.exists()) {
-                setXp(userSnap.data().xp || 0);
-            }
-
+        const fetchBets = async () => {
             const betsRef = collection(db, 'users', user.uid, 'bets');
             const betsSnap = await getDocs(betsRef);
 
@@ -44,7 +52,7 @@ export default function UserStats() {
             setLoading(false);
         };
 
-        fetchStats();
+        fetchBets();
     }, [user]);
 
     const handleCancelBet = async (bet) => {
@@ -52,26 +60,17 @@ export default function UserStats() {
         setCancelling(bet.id);
 
         try {
-            // Refund coins
             const userRef = doc(db, 'users', user.uid);
             const userSnap = await getDoc(userRef);
             const userData = userSnap.data();
 
-            // Deduct XP gained from placing the bet (if any)
-            const xpToRemove = bet.xpGained || 0;
-            const newXp = Math.max(0, (userData.xp || 0) - xpToRemove);
-
+            // Just refund coins (no XP to remove since placing doesn't give XP anymore)
             await updateDoc(userRef, {
                 coins: (userData.coins || 0) + bet.amount,
-                xp: newXp,
             });
 
-            // Delete the bet document
             await deleteDoc(doc(db, 'users', user.uid, 'bets', bet.id));
-
-            // Update local state
             setPendingBets(prev => prev.filter(b => b.id !== bet.id));
-            setXp(newXp);
         } catch (err) {
             console.error('Failed to cancel bet:', err);
         } finally {
@@ -87,8 +86,9 @@ export default function UserStats() {
         );
     }
 
-    const { level, currentXp, xpForNext } = calculateLevel(xp);
-    const xpPercent = xpForNext > 0 ? (currentXp / xpForNext) * 100 : 100;
+    const xpProgress = levelData
+        ? (levelData.currentXp / levelData.xpForNextLevel) * 100
+        : 0;
 
     const formatCoins = (num) => {
         if (num === undefined || num === null) return '0';
@@ -113,15 +113,18 @@ export default function UserStats() {
                     <span className="userstats-coins">🪙 {formatCoins(userCoins)}</span>
                 </div>
 
-                <div className="userstats-level">
-                    <div className="userstats-level-header">
-                        <span className="userstats-level-label">Level {level}</span>
-                        <span className="userstats-xp-text">{currentXp} / {xpForNext} XP</span>
+                {/* XP Bar (same style as homepage) */}
+                {levelData && (
+                    <div className="userstats-xp-section">
+                        <div className="userstats-xp-header">
+                            <span className="userstats-xp-level">Level {levelData.level}</span>
+                            <span className="userstats-xp-count">{levelData.currentXp} / {levelData.xpForNextLevel} XP</span>
+                        </div>
+                        <div className="userstats-xp-track">
+                            <div className="userstats-xp-fill" style={{ width: `${xpProgress}%` }} />
+                        </div>
                     </div>
-                    <div className="userstats-xp-track">
-                        <div className="userstats-xp-fill" style={{ width: `${xpPercent}%` }}></div>
-                    </div>
-                </div>
+                )}
 
                 {/* Pending Bets */}
                 <div className="userstats-bets-section">

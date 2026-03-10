@@ -7,7 +7,7 @@ import { rollCrate, generateReelStrip, getRarityColor } from '../utils/crateRewa
 import { calculateLevel } from '../utils/leveling';
 import '../css/Crate.css';
 
-const COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+const COOLDOWN_MS = 4 * 60 * 60 * 1000; // 4 hours
 const WIN_INDEX = 32;
 const ITEM_WIDTH = 120; // px per reel item
 const ITEM_GAP = 8;

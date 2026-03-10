@@ -25,6 +25,7 @@ import Bets from './components/Bets';
 import Leaderboard from './components/Leaderboard';
 import Shop from './components/Shop';
 import UserStats from './components/UserStats';
+import ToDo from './components/ToDo';
 import { getDatabase, ref, set, onDisconnect, onValue, remove } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
@@ -91,6 +92,13 @@ function AppContent() {
         return (
             <RouteGuard onNavigate={handleNavigate}>
                 <Shop />
+            </RouteGuard>
+        );
+
+      case '/todo':
+        return (
+            <RouteGuard onNavigate={handleNavigate}>
+                <ToDo />
             </RouteGuard>
         );
 

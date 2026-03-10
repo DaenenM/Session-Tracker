@@ -11,6 +11,7 @@ const NavMenu = ({ isMobileOpen, setIsMobileOpen, onNavigate }) => {
     { label: '🎲 Bets', path: '/bets' },
     { label: '🏆 Leaderboard', path: '/leaderboard' },
     { label: '💰 Shop', path: '/shop' },
+    { label: '📋 ToDo', path: '/todo' },
   ];
 
   const visibleItems = allItems.filter(function(item) {
