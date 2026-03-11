@@ -6,12 +6,13 @@ const NavMenu = ({ isMobileOpen, setIsMobileOpen, onNavigate }) => {
   const allItems = [
     { label: '🏠 Home', path: '/' },
     { label: '📡 Live', path: '/live' },
-    { label: '🔢 Counter', path: '/counter', role: 'staff' },
-    { label: '📊 Stats', path: '/stats' },
     { label: '🎲 Bets', path: '/bets' },
+    { label: '📊 Stats', path: '/stats' },
     { label: '🏆 Leaderboard', path: '/leaderboard' },
     { label: '💰 Shop', path: '/shop' },
-    { label: '📋 ToDo', path: '/todo' },
+    { label: '📋 To Do', path: '/todo' },
+    { label: '🔢 Counter', path: '/counter', role: 'staff' },
+    { label: '📌 Admin', path: '/admin', role: 'staff' },
   ];
 
   const visibleItems = allItems.filter(function(item) {

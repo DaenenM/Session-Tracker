@@ -406,6 +406,11 @@
     color: rgb(243, 53, 53);
 }
 
+.userstats-bets-title.winnings {
+    margin: 0.8rem 0;
+    color: gold;
+}
+
 /* ============================================
    XP BAR (matches homepage style)
    ============================================ */

@@ -26,11 +26,10 @@ import Leaderboard from './components/Leaderboard';
 import Shop from './components/Shop';
 import UserStats from './components/UserStats';
 import ToDo from './components/ToDo';
-import { getDatabase, ref, set, onDisconnect, onValue, remove } from "firebase/database";
-import { getAuth } from "firebase/auth";
+import Admin from './components/Admin';
 
 function AppContent() {
-  const { loading, isAuthenticated, logout, user, userCoins } = useAuth();
+  const { loading, logout, user, userCoins } = useAuth();
 
   const [currentPage, setCurrentPage] = useState(() => {
     return localStorage.getItem('currentPage') || '/';
@@ -107,6 +106,13 @@ function AppContent() {
 
       case '/register':
         return <Register onNavigate={handleNavigate} />;
+
+      case '/admin':
+        return (
+          <RouteGuard requiredRole="staff" onNavigate={handleNavigate}>
+            <Admin />
+          </RouteGuard>
+        );
 
       case '/settings':
         return (

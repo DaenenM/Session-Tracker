@@ -1,6 +1,6 @@
 // src/components/UserStats.jsx
 import { useState, useEffect } from 'react';
-import { collection, getDocs, getDoc, doc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { collection, query, getDocs, getDoc, doc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { calculateLevel } from '../utils/leveling';
@@ -10,10 +10,10 @@ export default function UserStats() {
     const { user, userCoins, userNameColor, userNameEmoji } = useAuth();
     const [wonBets, setWonBets] = useState([]);
     const [lostBets, setLostBets] = useState([]);
-    const [pendingBets, setPendingBets] = useState([]);
     const [levelData, setLevelData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [cancelling, setCancelling] = useState(null);
+    const [winnings, setWinnings] = useState(0);
+
 
     // Real-time XP listener (same as homepage)
     useEffect(() => {
@@ -38,45 +38,25 @@ export default function UserStats() {
             const won = [];
             const lost = [];
             const pending = [];
+            let totalWinnings = 0
 
             betsSnap.docs.forEach(d => {
                 const bet = { id: d.id, ...d.data() };
-                if (bet.status === 'won') won.push(bet);
+                if (bet.status === 'won'){
+                    won.push(bet);
+                    totalWinnings += bet.potentialPayout
+                } 
                 else if (bet.status === 'lost') lost.push(bet);
                 else if (bet.status === 'pending') pending.push(bet);
             });
-
             setWonBets(won);
             setLostBets(lost);
-            setPendingBets(pending);
             setLoading(false);
+            setWinnings(totalWinnings);
         };
 
         fetchBets();
     }, [user]);
-
-    const handleCancelBet = async (bet) => {
-        if (!user || cancelling) return;
-        setCancelling(bet.id);
-
-        try {
-            const userRef = doc(db, 'users', user.uid);
-            const userSnap = await getDoc(userRef);
-            const userData = userSnap.data();
-
-            // Just refund coins (no XP to remove since placing doesn't give XP anymore)
-            await updateDoc(userRef, {
-                coins: (userData.coins || 0) + bet.amount,
-            });
-
-            await deleteDoc(doc(db, 'users', user.uid, 'bets', bet.id));
-            setPendingBets(prev => prev.filter(b => b.id !== bet.id));
-        } catch (err) {
-            console.error('Failed to cancel bet:', err);
-        } finally {
-            setCancelling(null);
-        }
-    };
 
     if (loading) {
         return (
@@ -125,74 +105,51 @@ export default function UserStats() {
                         </div>
                     </div>
                 )}
+                <div className='grid grid-cols-2'>
+                    {/* Won Bets */}
+                    <div className="userstats-bets-section">
+                        <h3 className="userstats-bets-title won">
+                            Bets Won <span className="userstats-bets-count">({wonBets.length})</span>
+                        </h3>
+                        {wonBets.length === 0 ? (
+                            <p className="userstats-empty">No wins yet</p>
+                        ) : (
+                            <ul className="userstats-bets-list">
+                                {wonBets.map(bet => (
+                                    <li key={bet.id} className="userstats-bet-item userstats-bet-won">
+                                        <span className="userstats-bet-range">{bet.range}</span>
+                                        <span className="userstats-bet-amount">Bet: {formatCoins(bet.amount)}</span>
+                                        <span className="userstats-bet-result">+{formatCoins(bet.potentialPayout)}</span>
+                                        <span className="userstats-bet-count">Final: {bet.finalCount}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <h3 className="userstats-bets-title winnings">
+                            Total Winnings <span className="userstats-bets-count">+{winnings}</span>
+                        </h3>
+                    </div>
 
-                {/* Pending Bets */}
-                <div className="userstats-bets-section">
-                    <h3 className="userstats-bets-title active">
-                        Active Bets <span className="userstats-bets-count">({pendingBets.length})</span>
-                    </h3>
-                    {pendingBets.length === 0 ? (
-                        <p className="userstats-empty">No active bets</p>
-                    ) : (
-                        <ul className="userstats-bets-list">
-                            {pendingBets.map(bet => (
-                                <li key={bet.id} className="userstats-bet-item userstats-bet-pending">
-                                    <span className="userstats-bet-range">{bet.range}</span>
-                                    <span className="userstats-bet-amount">Bet: {formatCoins(bet.amount)}</span>
-                                    <span className="userstats-bet-payout">Payout: {formatCoins(bet.potentialPayout)}</span>
-                                    <button
-                                        className="userstats-cancel-btn"
-                                        onClick={() => handleCancelBet(bet)}
-                                        disabled={cancelling === bet.id}
-                                    >
-                                        {cancelling === bet.id ? 'Cancelling...' : 'Cancel'}
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-
-                {/* Won Bets */}
-                <div className="userstats-bets-section">
-                    <h3 className="userstats-bets-title won">
-                        Bets Won <span className="userstats-bets-count">({wonBets.length})</span>
-                    </h3>
-                    {wonBets.length === 0 ? (
-                        <p className="userstats-empty">No wins yet</p>
-                    ) : (
-                        <ul className="userstats-bets-list">
-                            {wonBets.map(bet => (
-                                <li key={bet.id} className="userstats-bet-item userstats-bet-won">
-                                    <span className="userstats-bet-range">{bet.range}</span>
-                                    <span className="userstats-bet-amount">Bet: {formatCoins(bet.amount)}</span>
-                                    <span className="userstats-bet-result">+{formatCoins(bet.potentialPayout)}</span>
-                                    <span className="userstats-bet-count">Final: {bet.finalCount}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-
-                {/* Lost Bets */}
-                <div className="userstats-bets-section">
-                    <h3 className="userstats-bets-title lost">
-                        Bets Lost <span className="userstats-bets-count">({lostBets.length})</span>
-                    </h3>
-                    {lostBets.length === 0 ? (
-                        <p className="userstats-empty">No losses yet</p>
-                    ) : (
-                        <ul className="userstats-bets-list">
-                            {lostBets.map(bet => (
-                                <li key={bet.id} className="userstats-bet-item userstats-bet-lost">
-                                    <span className="userstats-bet-range">{bet.range}</span>
-                                    <span className="userstats-bet-amount">Bet: {formatCoins(bet.amount)}</span>
-                                    <span className="userstats-bet-result">-{formatCoins(bet.amount)}</span>
-                                    <span className="userstats-bet-count">Final: {bet.finalCount}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+                    {/* Lost Bets */}
+                    <div className="userstats-bets-section">
+                        <h3 className="userstats-bets-title lost">
+                            Bets Lost <span className="userstats-bets-count">({lostBets.length})</span>
+                        </h3>
+                        {lostBets.length === 0 ? (
+                            <p className="userstats-empty">No losses yet</p>
+                        ) : (
+                            <ul className="userstats-bets-list">
+                                {lostBets.map(bet => (
+                                    <li key={bet.id} className="userstats-bet-item userstats-bet-lost">
+                                        <span className="userstats-bet-range">{bet.range}</span>
+                                        <span className="userstats-bet-amount">Bet: {formatCoins(bet.amount)}</span>
+                                        <span className="userstats-bet-result">-{formatCoins(bet.amount)}</span>
+                                        <span className="userstats-bet-count">Final: {bet.finalCount}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

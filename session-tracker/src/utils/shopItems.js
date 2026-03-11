@@ -14,7 +14,8 @@ export const SHOP_ITEMS = {
         { id: 'color-rainbow', name: 'Rainbow', type: 'color', value: 'rainbow', price: 500 },
     ],
     emojis: [
-        { id: 'emoji-cat', name: 'cat', type: 'emoji', value: '😸', price: 175 },
+        { id: 'emoji-bread', name: 'Bread', type: 'emoji', value: '🥖', price: 100 },
+        { id: 'emoji-cat', name: 'cat', type: 'emoji', value: '😸', price: 150 },
         { id: 'emoji-lightning', name: 'Lightning', type: 'emoji', value: '⚡', price: 200 },
         { id: 'emoji-rocket', name: 'Rocket', type: 'emoji', value: '🚀', price: 225 },
         { id: 'emoji-skull', name: 'Skull', type: 'emoji', value: '💀', price: 250 },

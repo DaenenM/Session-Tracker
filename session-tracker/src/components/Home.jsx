@@ -83,7 +83,7 @@ export default function HomePage({ onNavigate }) {
         <section className="hero-section">
           <div className="hero-badge">Welcome back</div>
           <h1 className="hero-title">
-            The Essentially Session Tracker<span className="hero-dot">.</span>
+            The Session Tracker<span className="hero-dot">.</span>
           </h1>
           <p className="hero-subtitle">
             Your session tracking count, compete in real time, and climb the ranks.

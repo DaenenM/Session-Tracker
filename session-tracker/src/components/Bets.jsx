@@ -2,14 +2,11 @@
 import { useState } from 'react';
 import Odds from './bet-cards/Odds';
 import PlaceBet from './bet-cards/PlaceBets';
+import YourBets from './bet-cards/YourBets';
 import BetsList from './bet-cards/BetsList';
 
 export default function Bets() {
     const [selectedBet, setSelectedBet] = useState(null);
-
-    const handleSelectBet = (bet) => {
-        setSelectedBet(bet);
-    };
 
     return (
         <div className="bets-container">
@@ -17,12 +14,19 @@ export default function Bets() {
                 <div className="bets-header">
                     <h1 className="bets-title">Bets</h1>
                 </div>
-                
+
+                {/* Top section: Odds left, Place Bet + Your Bets right */}
                 <div className="bets-content">
-                    <Odds onSelectBet={handleSelectBet} />
-                    <PlaceBet selectedBet={selectedBet} />
+                    <div className="bets-left">
+                        <Odds onSelectBet={setSelectedBet} />
+                    </div>
+                    <div className="bets-right">
+                        <PlaceBet selectedBet={selectedBet} />
+                        <YourBets />
+                    </div>
                 </div>
 
+                {/* Full-width All Bets table below */}
                 <BetsList />
             </div>
         </div>

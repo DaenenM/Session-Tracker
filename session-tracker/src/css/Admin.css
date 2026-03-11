@@ -1,0 +1,469 @@
+/* src/css/Admin.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Work+Sans:wght@400;500;600&display=swap');
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+
+.admin-container {
+    min-height: 100vh;
+    padding: 2.5rem 2rem 2rem;
+    display: flex;
+    justify-content: center;
+    animation: adminFadeIn 0.6s ease-out both;
+}
+
+.admin-content {
+    max-width: 580px;
+    width: 100%;
+}
+
+@keyframes adminFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.admin-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: adminSlideUp 0.6s ease-out forwards;
+    animation-delay: 0.1s;
+}
+
+.admin-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.35rem 0;
+    letter-spacing: -0.03em;
+}
+
+.admin-subtitle {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(129, 140, 248, 0.4);
+}
+
+/* ============================================
+   MESSAGES
+   ============================================ */
+
+.admin-msg {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1rem;
+    animation: adminSlideUp 0.3s ease-out;
+}
+
+.admin-msg-success {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    color: #4ade80;
+}
+
+.admin-msg-error {
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    color: #f87171;
+}
+
+/* ============================================
+   FORM CARD
+   ============================================ */
+
+.admin-form {
+    background: rgba(26, 26, 46, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(129, 140, 248, 0.12);
+    border-radius: 20px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    opacity: 0;
+    animation: adminSlideUp 0.5s ease-out forwards;
+    animation-delay: 0.15s;
+}
+
+/* ============================================
+   FORM GROUP
+   ============================================ */
+
+.admin-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.admin-form-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(184, 193, 236, 0.45);
+}
+
+.admin-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+}
+
+/* ============================================
+   INPUTS & SELECTS
+   ============================================ */
+
+.admin-input,
+.admin-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(129, 140, 248, 0.15);
+    background: rgba(129, 140, 248, 0.05);
+    color: #fff;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.2s ease;
+    appearance: none;
+}
+
+.admin-input:focus,
+.admin-select:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.12);
+}
+
+.admin-input::placeholder {
+    color: rgba(184, 193, 236, 0.25);
+}
+
+.admin-input[type="number"] {
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+}
+
+.admin-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23818cf8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+
+.admin-select option {
+    background: #12101f;
+    color: #e2e8f0;
+}
+
+/* ============================================
+   SELECTED USER INDICATOR
+   ============================================ */
+
+.admin-selected-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 14px;
+    border: 1px solid rgba(129, 140, 248, 0.15);
+    background: rgba(129, 140, 248, 0.06);
+    animation: adminSlideUp 0.3s ease-out;
+}
+
+.admin-selected-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.admin-selected-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-selected-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #fff;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-selected-email {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(184, 193, 236, 0.4);
+    display: block;
+}
+
+.admin-selected-coins {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   SUBMIT BUTTON
+   ============================================ */
+
+.admin-submit {
+    width: 100%;
+    padding: 0.85rem;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%);
+    color: #fff;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(129, 140, 248, 0.25);
+    letter-spacing: 0.02em;
+}
+
+.admin-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(129, 140, 248, 0.35);
+}
+
+.admin-submit:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.admin-submit:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ============================================
+   USER LIST
+   ============================================ */
+
+.admin-user-list {
+    margin-top: 1.5rem;
+    border-radius: 18px;
+    border: 1px solid rgba(129, 140, 248, 0.1);
+    background: rgba(26, 26, 46, 0.5);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    opacity: 0;
+    animation: adminSlideUp 0.5s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+.admin-user-list-header {
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid rgba(129, 140, 248, 0.08);
+}
+
+.admin-user-list-title {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(184, 193, 236, 0.4);
+    margin: 0;
+}
+
+.admin-user-list-scroll {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.admin-user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1.25rem;
+    border-bottom: 1px solid rgba(129, 140, 248, 0.05);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.admin-user-row:hover {
+    background: rgba(129, 140, 248, 0.06);
+}
+
+.admin-user-row:last-child {
+    border-bottom: none;
+}
+
+.admin-user-row-active {
+    background: rgba(129, 140, 248, 0.08);
+}
+
+.admin-user-row-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+}
+
+.admin-user-row-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.3) 0%, rgba(192, 132, 252, 0.3) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.65rem;
+    flex-shrink: 0;
+}
+
+.admin-user-row-name {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-user-row-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.admin-user-row-role {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(184, 193, 236, 0.35);
+}
+
+.admin-user-row-coins {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(251, 191, 36, 0.6);
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes adminSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   RESPONSIVE — TABLET
+   ============================================ */
+
+@media (max-width: 768px) {
+    .admin-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .admin-title {
+        font-size: 2.1rem;
+    }
+
+    .admin-form {
+        padding: 1.25rem;
+    }
+
+    .admin-form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE
+   ============================================ */
+
+@media (max-width: 480px) {
+    .admin-container {
+        padding: 1rem 0.75rem;
+    }
+
+    .admin-title {
+        font-size: 1.75rem;
+    }
+
+    .admin-form {
+        padding: 1rem;
+        border-radius: 16px;
+        gap: 1rem;
+    }
+
+    .admin-input,
+    .admin-select {
+        padding: 0.7rem 0.85rem;
+        font-size: 0.85rem;
+    }
+
+    .admin-submit {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .admin-selected-user {
+        padding: 0.75rem;
+    }
+
+    .admin-selected-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
+
+    .admin-user-row {
+        padding: 0.6rem 1rem;
+    }
+}

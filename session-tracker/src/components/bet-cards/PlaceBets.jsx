@@ -4,7 +4,6 @@ import { getDatabase, ref, onValue } from "firebase/database";
 import { doc, runTransaction, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from '../../firebase';
 import { useAuth } from '../../context/AuthContext';
-import { calculateLevel, getXpForBet } from '../../utils/leveling';
 
 const rtdb = getDatabase();
 
