@@ -47,57 +47,77 @@ export const resolveBets = async (finalCount) => {
     let winners = 0;
     let losers = 0;
 
+    // ✅ Accumulate deltas per user before touching Firestore
+    const userDeltas = {}; // { userId: { coinsDelta, xpDelta } }
+
+    for (const betDoc of pendingBets) {
+        const bet = betDoc.data();
+        const won = isWinningBet(bet.range, finalCount);
+        const userId = betDoc.ref.parent.parent.id;
+        const participationXp = getXpForBet(bet.amount);
+
+        if (!userDeltas[userId]) userDeltas[userId] = { coinsDelta: 0, xpDelta: 0 };
+
+        if (won) {
+            winners++;
+            const multiplier = bet.multiplier || 1;
+            const bonusXp = getWinXp(multiplier);
+            userDeltas[userId].coinsDelta += bet.potentialPayout || 0;
+            userDeltas[userId].xpDelta += participationXp + bonusXp;
+        } else {
+            losers++;
+            userDeltas[userId].xpDelta += participationXp;
+        }
+    }
+
+    // ✅ Now fetch each user once and apply the full accumulated delta
+    const userIds = Object.keys(userDeltas);
+    const userDataMap = {};
+    await Promise.all(userIds.map(async (userId) => {
+        userDataMap[userId] = await getUserData(userId);
+    }));
+
+    // ✅ Write everything in batches
+    const allDocs = [...pendingBets];
     const batchSize = 500;
-    for (let i = 0; i < pendingBets.length; i += batchSize) {
-        const chunk = pendingBets.slice(i, i + batchSize);
+
+    // Batch 1: update all bet statuses
+    for (let i = 0; i < allDocs.length; i += batchSize) {
+        const chunk = allDocs.slice(i, i + batchSize);
         const batch = writeBatch(db);
-
         for (const betDoc of chunk) {
-            const bet = betDoc.data();
-            const won = isWinningBet(bet.range, finalCount);
-            const userId = betDoc.ref.parent.parent.id;
-            const userRef = doc(db, 'users', userId);
-            const userData = await getUserData(userId);
-
-            // Everyone gets participation XP based on bet amount
-            const participationXp = getXpForBet(bet.amount);
-
+            const won = isWinningBet(betDoc.data().range, finalCount);
             batch.update(betDoc.ref, {
                 status: won ? 'won' : 'lost',
                 finalCount,
                 resolvedAt: new Date().toISOString(),
             });
-
-            if (won) {
-                winners++;
-                const multiplier = bet.multiplier || 1;
-                const bonusXp = getWinXp(multiplier);
-                const totalXp = participationXp + bonusXp;
-                const newXp = userData.xp + totalXp;
-
-                const oldLevel = calculateLevel(userData.xp).level;
-                const newLevel = calculateLevel(newXp).level;
-                const levelUpBonus = (newLevel - oldLevel) * 100;
-
-                batch.update(userRef, {
-                    coins: userData.coins + (bet.potentialPayout || 0) + levelUpBonus,
-                    xp: newXp,
-                });
-            } else {
-                losers++;
-                const newXp = userData.xp + participationXp;
-
-                const oldLevel = calculateLevel(userData.xp).level;
-                const newLevel = calculateLevel(newXp).level;
-                const levelUpBonus = (newLevel - oldLevel) * 100;
-
-                batch.update(userRef, {
-                    coins: userData.coins + levelUpBonus,
-                    xp: newXp,
-                });
-            }
         }
         await batch.commit();
     }
+
+    // Batch 2: update all users (one write per user)
+    const userEntries = Object.entries(userDeltas);
+    for (let i = 0; i < userEntries.length; i += batchSize) {
+        const chunk = userEntries.slice(i, i + batchSize);
+        const batch = writeBatch(db);
+        for (const [userId, { coinsDelta, xpDelta }] of chunk) {
+            const userData = userDataMap[userId];
+            const oldXp = userData.xp;
+            const newXp = oldXp + xpDelta;
+
+            const oldLevel = calculateLevel(oldXp).level;
+            const newLevel = calculateLevel(newXp).level;
+            const levelUpBonus = (newLevel - oldLevel) * 100;
+
+            const userRef = doc(db, 'users', userId);
+            batch.update(userRef, {
+                coins: userData.coins + coinsDelta + levelUpBonus,
+                xp: newXp,
+            });
+        }
+        await batch.commit();
+    }
+
     return { winners, losers };
 };
