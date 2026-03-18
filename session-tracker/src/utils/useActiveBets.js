@@ -13,9 +13,11 @@ export default function useActiveBets() {
     useEffect(() => {
         if (!user) return;
 
+        // Listen to the user's bets subcollection, filtered to pending only
         const betsRef = collection(db, 'users', user.uid, 'bets');
         const pendingQuery = query(betsRef, where('status', '==', 'pending'));
 
+        // onSnapshot gives us real-time updates — count updates instantly when bets resolve
         const unsubscribe = onSnapshot(pendingQuery, (snapshot) => {
             setCount(snapshot.size);
         });
