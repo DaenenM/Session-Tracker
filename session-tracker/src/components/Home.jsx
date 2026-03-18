@@ -7,7 +7,7 @@ import { db, auth } from '../firebase';               // Firestore + Auth instan
 import { calculateLevel } from '../utils/leveling';   // Derives level, currentXp, xpForNextLevel from total XP
 import CrateOpener from './CrateOpener';               // Daily crate modal with spinning reel
 import '../css/Home.css';
-import useActiveBets from '../utils/useActiveBets';
+import useActiveBets from '../hooks/useActiveBets';
 
 export default function HomePage({ onNavigate }) {
 
