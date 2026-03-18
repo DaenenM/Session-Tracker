@@ -101,10 +101,17 @@
 }
 
 .styled-name-rainbow {
-    background: linear-gradient(90deg, #f87171, #fb923c, #fbbf24, #4ade80, #60a5fa, #c084fc);
+    background: linear-gradient(90deg, #f87171, #fb923c, #fbbf24, #4ade80, #60a5fa, #c084fc, #f87171);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: rainbowShift 2s linear infinite;
+}
+
+@keyframes rainbowShift {
+    from { background-position: 0% center; }
+    to { background-position: 200% center; }
 }
 
 .styled-name-emoji {
@@ -190,6 +197,12 @@
 
 .shop-color-rainbow {
     background: conic-gradient(#f87171, #fb923c, #fbbf24, #4ade80, #60a5fa, #c084fc, #f87171);
+    animation: rainbowSpin 3s linear infinite;
+}
+
+@keyframes rainbowSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .shop-emoji-preview {
