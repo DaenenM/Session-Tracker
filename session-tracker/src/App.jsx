@@ -1,5 +1,5 @@
 // src/App.jsx
-import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './index.css';
 import './css/Header.css';
 import './css/SessionCounter.css';
@@ -17,7 +17,7 @@ import SessionTracker from './components/SessionCounter';
 import LiveView from './components/LiveView';
 import Login from './components/Login';
 import Register from './components/Register';
-import RouteGuard from './components/RouteGuard';
+import RouteGuard from './hooks/RouteGuard';
 import Stats from './components/Stats';
 import Footer from './components/Footer';
 import Settings from './components/Settings';
@@ -31,18 +31,6 @@ import Admin from './components/Admin';
 function AppContent() {
   const { loading, logout, user, userCoins } = useAuth();
 
-  const [currentPage, setCurrentPage] = useState(() => {
-    return localStorage.getItem('currentPage') || '/';
-  });
-
-  const handleNavigate = (path) => {
-    setCurrentPage(path);
-  };
-
-  useEffect(() => {
-    localStorage.setItem('currentPage', currentPage);
-  }, [currentPage]);
-
   if (loading) {
     return (
       <div className="guard-loading" style={{ minHeight: '100vh' }}>
@@ -51,98 +39,79 @@ function AppContent() {
     );
   }
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case '/':
-        return <HomePage onNavigate={handleNavigate} />;
-
-      case '/live':
-        return <LiveView />;
-
-      case '/counter':
-        return (
-          <RouteGuard requiredRole="staff" onNavigate={handleNavigate}>
-            <SessionTracker />
-          </RouteGuard>
-        );
-
-      case '/stats':
-        return (
-          <RouteGuard onNavigate={handleNavigate}>
-            <Stats />
-          </RouteGuard>
-        );
-
-      case '/bets':
-        return (
-          <RouteGuard onNavigate={handleNavigate}>
-            <Bets />
-          </RouteGuard>
-        );
-
-      case '/leaderboard':
-        return (
-            <RouteGuard onNavigate={handleNavigate}>
-                <Leaderboard />
-            </RouteGuard>
-        );
-
-      case '/shop':
-        return (
-            <RouteGuard onNavigate={handleNavigate}>
-                <Shop />
-            </RouteGuard>
-        );
-
-      case '/todo':
-        return (
-            <RouteGuard onNavigate={handleNavigate}>
-                <ToDo />
-            </RouteGuard>
-        );
-
-      case '/login':
-        return <Login onNavigate={handleNavigate} />;
-
-      case '/register':
-        return <Register onNavigate={handleNavigate} />;
-
-      case '/admin':
-        return (
-          <RouteGuard requiredRole="staff" onNavigate={handleNavigate}>
-            <Admin />
-          </RouteGuard>
-        );
-
-      case '/settings':
-        return (
-          <RouteGuard requiredRole="user" onNavigate={handleNavigate}>
-            <Settings onNavigate={handleNavigate} />
-          </RouteGuard>
-        );
-      case '/account/stats':
-        return (
-            <RouteGuard onNavigate={handleNavigate}>
-                <UserStats />
-            </RouteGuard>
-        );
-
-      default:
-        return <HomePage onNavigate={handleNavigate} />;
-    }
-  };
-
   return (
     <>
-      <Navbar 
+      <Navbar
         isSignedIn={user !== null}
         userName={user?.displayName}
-        coins={userCoins}  // ← Need to add this!
-        onNavigate={handleNavigate}
+        coins={userCoins}
         onLogout={logout}
       />
       <div className="page-container">
-        {renderPage()}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/live" element={<LiveView />} />
+
+          <Route path="/counter" element={
+            <RouteGuard requiredRole="staff">
+              <SessionTracker />
+            </RouteGuard>
+          } />
+
+          <Route path="/stats" element={
+            <RouteGuard>
+              <Stats />
+            </RouteGuard>
+          } />
+
+          <Route path="/bets" element={
+            <RouteGuard>
+              <Bets />
+            </RouteGuard>
+          } />
+
+          <Route path="/leaderboard" element={
+            <RouteGuard>
+              <Leaderboard />
+            </RouteGuard>
+          } />
+
+          <Route path="/shop" element={
+            <RouteGuard>
+              <Shop />
+            </RouteGuard>
+          } />
+
+          <Route path="/todo" element={
+            <RouteGuard>
+              <ToDo />
+            </RouteGuard>
+          } />
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          <Route path="/admin" element={
+            <RouteGuard requiredRole="staff">
+              <Admin />
+            </RouteGuard>
+          } />
+
+          <Route path="/settings" element={
+            <RouteGuard requiredRole="user">
+              <Settings />
+            </RouteGuard>
+          } />
+
+          <Route path="/account/stats" element={
+            <RouteGuard>
+              <UserStats />
+            </RouteGuard>
+          } />
+
+          {/* Catch-all — redirect unknown paths to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </div>
       <Footer />
     </>
@@ -152,7 +121,9 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </AuthProvider>
   );
 }

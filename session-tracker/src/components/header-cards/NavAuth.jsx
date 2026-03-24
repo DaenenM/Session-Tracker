@@ -3,15 +3,18 @@
 // Shows Login/Register links when logged out, or account dropdown when logged in
 
 import { useState } from 'react';
-import { Coins } from 'lucide-react';           // Coin icon from Lucide icon library
-import StyledName from '../StyledName';          // Renders name with equipped color/emoji from shop
-import { useAuth } from '../../context/AuthContext'; // Auth context for user state, coins, cosmetics
+import { useNavigate } from 'react-router-dom';
+import { Coins } from 'lucide-react';
+import StyledName from '../StyledName';
+import { useAuth } from '../../context/AuthContext';
 
-export default function NavAuth({ onNavigate, onLogout, setIsMobileOpen }) {
+export default function NavAuth({ onLogout, setIsMobileOpen }) {
+    const navigate = useNavigate();
+
     // Controls the account dropdown visibility
     const [isAccountOpen, setIsAccountOpen] = useState(false);
 
-    // Pull user data directly from AuthContext — no need to pass as props
+    // Pull user data directly from AuthContext
     const { user, userCoins, userNameColor, userNameEmoji } = useAuth();
 
     // Format coin numbers with commas (e.g., 1000 -> "1,000")
@@ -31,13 +34,13 @@ export default function NavAuth({ onNavigate, onLogout, setIsMobileOpen }) {
     const handleItemClick = (e, item) => {
         e.preventDefault();
         if (item.label === 'Logout') {
-            onLogout?.();       // Sign out via AuthContext
-            onNavigate?.('/');   // Redirect to home
+            onLogout?.();
+            navigate('/');
         } else {
-            onNavigate?.(item.path);
+            navigate(item.path);
         }
-        setIsAccountOpen(false);  // Close the dropdown
-        setIsMobileOpen(false);   // Close the mobile menu
+        setIsAccountOpen(false);
+        setIsMobileOpen(false);
     };
 
     // --- Logged out state: show Login and Register links ---
@@ -48,7 +51,7 @@ export default function NavAuth({ onNavigate, onLogout, setIsMobileOpen }) {
                     href="/login"
                     onClick={(e) => {
                         e.preventDefault();
-                        onNavigate?.('/login');
+                        navigate('/login');
                         setIsMobileOpen(false);
                     }}
                     className="navbar-link navbar-auth-link"
@@ -59,7 +62,7 @@ export default function NavAuth({ onNavigate, onLogout, setIsMobileOpen }) {
                     href="/register"
                     onClick={(e) => {
                         e.preventDefault();
-                        onNavigate?.('/register');
+                        navigate('/register');
                         setIsMobileOpen(false);
                     }}
                     className="navbar-link navbar-auth-link"
@@ -74,23 +77,19 @@ export default function NavAuth({ onNavigate, onLogout, setIsMobileOpen }) {
     return (
         <div className="navbar-auth">
             <div className="navbar-account">
-                {/* Account trigger button — shows name with shop cosmetics and coin balance */}
                 <button
                     className="navbar-account-trigger"
                     onClick={() => setIsAccountOpen(!isAccountOpen)}
                 >
-                    {/* Display name with equipped color and emoji from shop */}
                     <StyledName
                         displayName={user.displayName || 'Account'}
                         nameColor={userNameColor}
                         nameEmoji={userNameEmoji}
                     />
-                    {/* Coin balance display */}
                     <span className="navbar-coins">
                         <Coins size={18} color="#f0c040" />
                         {formatCoins(userCoins)}
                     </span>
-                    {/* Chevron arrow — rotates when dropdown is open */}
                     <svg
                         className={`navbar-account-icon ${isAccountOpen ? 'open' : ''}`}
                         width="16"
@@ -108,7 +107,6 @@ export default function NavAuth({ onNavigate, onLogout, setIsMobileOpen }) {
                     </svg>
                 </button>
 
-                {/* Dropdown menu — only renders when open */}
                 {isAccountOpen && (
                     <ul className="navbar-dropdown">
                         {accountItems.map((item) => (

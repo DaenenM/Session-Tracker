@@ -2,16 +2,18 @@
 // Main landing page — shows hero section, level/XP progress, and feature navigation cards
 
 import { useState, useEffect } from 'react';
-import { doc, onSnapshot } from "firebase/firestore"; // onSnapshot for real-time updates (replaces getDoc)
-import { db, auth } from '../firebase';               // Firestore + Auth instances
-import { calculateLevel } from '../utils/leveling';   // Derives level, currentXp, xpForNextLevel from total XP
-import CrateOpener from './CrateOpener';               // Daily crate modal with spinning reel
+import { useNavigate } from 'react-router-dom';
+import { doc, onSnapshot } from "firebase/firestore";
+import { db, auth } from '../firebase';
+import { calculateLevel } from '../utils/leveling';
+import CrateOpener from './home-cards/CrateOpener';
 import '../css/Home.css';
 import useActiveBets from '../hooks/useActiveBets';
 
-export default function HomePage({ onNavigate }) {
-
+export default function HomePage() {
+  const navigate = useNavigate();
   const activeBetCount = useActiveBets();
+
   // Level data derived from total XP — { level, currentXp, xpForNextLevel }
   const [levelData, setLevelData] = useState(null);
 
@@ -35,7 +37,7 @@ export default function HomePage({ onNavigate }) {
       }
     });
 
-    return () => unsubscribe(); // Cleanup listener on unmount
+    return () => unsubscribe();
   }, []);
 
   // Calculate XP progress bar percentage (0-100)
@@ -89,16 +91,14 @@ export default function HomePage({ onNavigate }) {
             Your session tracking count, compete in real time, and climb the ranks.
           </p>
           <div className="hero-actions">
-            <button className="hero-btn hero-btn-primary" onClick={() => onNavigate?.('/live')}>
+            <button className="hero-btn hero-btn-primary" onClick={() => navigate('/live')}>
               Watch Live
               <span className="hero-btn-arrow">→</span>
             </button>
-            {/* Opens the daily crate modal */}
             <button className="hero-btn hero-btn-secondary" onClick={() => setShowCrate(true)}>
               🎁 Open Crate
             </button>
-
-            <button className="hero-btn hero-btn-secondary" onClick={() => onNavigate?.('/shop')}>
+            <button className="hero-btn hero-btn-secondary" onClick={() => navigate('/shop')}>
               Shop
               <span className="hero-btn-arrow">→</span>
             </button>
@@ -114,13 +114,12 @@ export default function HomePage({ onNavigate }) {
           </div>
           <div className="stat-divider"></div>
           <div className="stat-item">
-              <span className="stat-number">{activeBetCount}</span>
-              <span className="stat-label">Active Bets</span>
+            <span className="stat-number">{activeBetCount}</span>
+            <span className="stat-label">Active Bets</span>
           </div>
         </section>
 
         {/* --- XP Progress Bar --- */}
-        {/* Only renders once level data has loaded */}
         {levelData && (
           <section className="xp-bar-section">
             <div className="xp-bar-header">
@@ -128,7 +127,6 @@ export default function HomePage({ onNavigate }) {
               <span className="xp-count">{levelData.currentXp} / {levelData.xpForNextLevel} XP</span>
             </div>
             <div className="xp-bar-track">
-              {/* Fill width is a percentage of current XP toward next level */}
               <div className="xp-bar-fill" style={{ width: `${xpProgress}%` }} />
             </div>
           </section>
@@ -142,9 +140,8 @@ export default function HomePage({ onNavigate }) {
               <button
                 key={feature.path}
                 className="feature-card"
-                // --accent CSS variable used for hover/border color per card
                 style={{ '--accent': feature.accent, animationDelay: `${0.1 + index * 0.08}s` }}
-                onClick={() => onNavigate?.(feature.path)}
+                onClick={() => navigate(feature.path)}
               >
                 <div className="feature-icon">{feature.icon}</div>
                 <h3 className="feature-title">{feature.title}</h3>
@@ -158,7 +155,6 @@ export default function HomePage({ onNavigate }) {
       </div>
 
       {/* --- Daily Crate Modal --- */}
-      {/* Renders on top of everything when showCrate is true */}
       {showCrate && <CrateOpener onClose={() => setShowCrate(false)} />}
     </div>
   );

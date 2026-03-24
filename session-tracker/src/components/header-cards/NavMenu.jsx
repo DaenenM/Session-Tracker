@@ -1,6 +1,9 @@
+// src/components/header-cards/NavMenu.jsx
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-const NavMenu = ({ isMobileOpen, setIsMobileOpen, onNavigate }) => {
+const NavMenu = ({ isMobileOpen, setIsMobileOpen }) => {
+  const navigate = useNavigate();
   const { hasRole } = useAuth();
 
   const allItems = [
@@ -22,7 +25,7 @@ const NavMenu = ({ isMobileOpen, setIsMobileOpen, onNavigate }) => {
 
   function handleClick(e, path) {
     e.preventDefault();
-    onNavigate(path);
+    navigate(path);
     setIsMobileOpen(false);
   }
 

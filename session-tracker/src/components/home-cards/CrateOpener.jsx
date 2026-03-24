@@ -1,11 +1,11 @@
 // src/components/CrateOpener.jsx
 import { useState, useEffect, useRef } from 'react';
 import { doc, runTransaction, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { useAuth } from '../context/AuthContext';
-import { rollCrate, generateReelStrip, getRarityColor } from '../utils/crateRewards';
-import { calculateLevel } from '../utils/leveling';
-import '../css/Crate.css';
+import { db } from '../../firebase';
+import { useAuth } from '../../context/AuthContext';
+import { rollCrate, generateReelStrip, getRarityColor } from '../../utils/crateRewards';
+import { calculateLevel } from '../../utils/leveling';
+import '../../css/Crate.css';
 
 const COOLDOWN_MS = 4 * 60 * 60 * 1000; // 4 hours
 const WIN_INDEX = 32;
@@ -102,15 +102,18 @@ export default function CrateOpener({ onClose }) {
             }
         });
 
-        // Switch to landed state after animation completes
+        // Auto-claim as soon as spin animation finishes
+        // Pass `reward` directly — state may not be updated yet in this tick
         setTimeout(() => {
             setState('landed');
+            claimReward(reward);
         }, 4200);
     };
 
-    const handleClaim = async () => {
-        if (!user || !winningReward || state !== 'landed') return;
-        setState('claimed');
+    // Claims the reward and writes to Firestore
+    // Accepts `reward` param so it doesn't rely on potentially-stale state
+    const claimReward = async (reward) => {
+        if (!user || !reward) return;
 
         try {
             const userDocRef = doc(db, 'users', user.uid);
@@ -124,21 +127,21 @@ export default function CrateOpener({ onClose }) {
                 // Base 10 XP just for opening a crate
                 let xpGain = 10;
 
-                if (winningReward.type === 'coins') {
+                if (reward.type === 'coins') {
                     // Coin reward — add directly to balance
-                    updates.coins = (data.coins || 0) + winningReward.value;
-                } else if (winningReward.type === 'xp') {
+                    updates.coins = (data.coins || 0) + reward.value;
+                } else if (reward.type === 'xp') {
                     // XP reward — stacks with the base 10 XP
-                    xpGain += winningReward.value;
-                } else if (winningReward.type === 'shopItem') {
+                    xpGain += reward.value;
+                } else if (reward.type === 'shopItem') {
                     const owned = data.ownedItems || [];
-                    if (owned.includes(winningReward.shopId)) {
+                    if (owned.includes(reward.shopId)) {
                         // Already owned — refund coins based on rarity
-                        const coinRefund = Math.floor(winningReward.weight * 15) + 25;
+                        const coinRefund = Math.floor(reward.weight * 15) + 25;
                         updates.coins = (data.coins || 0) + coinRefund;
                     } else {
                         // New item — add to owned inventory
-                        updates.ownedItems = [...owned, winningReward.shopId];
+                        updates.ownedItems = [...owned, reward.shopId];
                     }
                 }
 
@@ -157,10 +160,12 @@ export default function CrateOpener({ onClose }) {
                 transaction.update(userDocRef, updates);
             });
 
+            setState('claimed');
             setCanOpen(false);
             startCooldownTimer(COOLDOWN_MS);
         } catch (err) {
             console.error('Failed to claim crate:', err);
+            setState('landed'); // Fallback so the modal isn't stuck
         }
     };
 
@@ -174,10 +179,12 @@ export default function CrateOpener({ onClose }) {
         );
     }
 
+    // Block closing while spinning or mid-claim (landed = claiming in progress)
+    const canClose = state === 'ready' || state === 'claimed';
+
     return (
-        <div className="crate-overlay" onClick={state === 'ready' || state === 'claimed' ? onClose : undefined}>
+        <div className="crate-overlay" onClick={canClose ? onClose : undefined}>
             <div className="crate-modal" onClick={(e) => e.stopPropagation()}>
-                <button className="crate-close-btn" onClick={onClose}>✕</button>
 
                 <h2 className="crate-title">Daily Crate</h2>
                 <p className="crate-subtitle">
@@ -188,7 +195,7 @@ export default function CrateOpener({ onClose }) {
                         : state === 'spinning'
                         ? 'Opening...'
                         : state === 'landed'
-                        ? 'You got:'
+                        ? 'Claiming reward...'
                         : 'Claimed!'}
                 </p>
 
@@ -199,7 +206,7 @@ export default function CrateOpener({ onClose }) {
                         {reelStrip.map((item, i) => (
                             <div
                                 key={i}
-                                className={`crate-reel-item ${i === WIN_INDEX && state === 'landed' ? 'crate-reel-winner' : ''}`}
+                                className={`crate-reel-item ${i === WIN_INDEX && (state === 'landed' || state === 'claimed') ? 'crate-reel-winner' : ''}`}
                                 style={{ '--rarity-color': getRarityColor(item.rarity) }}
                             >
                                 <span className="crate-reel-item-label">{item.label}</span>
@@ -209,18 +216,16 @@ export default function CrateOpener({ onClose }) {
                     </div>
                 </div>
 
-                {/* Reward reveal */}
-                {state === 'landed' && winningReward && (
-                    <div className="crate-reward-reveal" style={{ '--rarity-color': getRarityColor(winningReward.rarity) }}>
+                {/* Reward reveal — shows during both landed (claiming) and claimed states */}
+                {(state === 'landed' || state === 'claimed') && winningReward && (
+                    <div
+                        className={`crate-reward-reveal ${state === 'claimed' ? 'crate-reward-claimed' : ''}`}
+                        style={{ '--rarity-color': getRarityColor(winningReward.rarity) }}
+                    >
                         <span className="crate-reward-label">{winningReward.label}</span>
-                        <span className="crate-reward-rarity">{winningReward.rarity}</span>
-                    </div>
-                )}
-
-                {state === 'claimed' && winningReward && (
-                    <div className="crate-reward-reveal crate-reward-claimed" style={{ '--rarity-color': getRarityColor(winningReward.rarity) }}>
-                        <span className="crate-reward-label">{winningReward.label}</span>
-                        <span className="crate-reward-rarity">Added to your account! (+10 XP)</span>
+                        <span className="crate-reward-rarity">
+                            {state === 'claimed' ? 'Added to your account! (+10 XP)' : winningReward.rarity}
+                        </span>
                     </div>
                 )}
 
@@ -236,11 +241,7 @@ export default function CrateOpener({ onClose }) {
                             ⏳ {timeLeft}
                         </button>
                     )}
-                    {state === 'landed' && (
-                        <button className="crate-claim-btn" onClick={handleClaim}>
-                            ✨ Claim Reward
-                        </button>
-                    )}
+                    {/* No manual claim button — reward is auto-claimed after spin */}
                     {state === 'claimed' && (
                         <button className="crate-close-action-btn" onClick={onClose}>
                             Done

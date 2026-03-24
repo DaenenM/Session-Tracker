@@ -3,10 +3,10 @@
 // Contains NavMenu (page links) and NavAuth (login/account dropdown)
 
 import { useState } from 'react';
-import NavMenu from './header-cards/NavMenu';   // Navigation links (Home, Live, Bets, etc.)
-import NavAuth from './header-cards/NavAuth';   // Login/Register buttons or Account dropdown
+import NavMenu from './header-cards/NavMenu';
+import NavAuth from './header-cards/NavAuth';
 
-const Navbar = ({ onNavigate, onLogout }) => {
+const Navbar = ({ onLogout }) => {
     // Controls whether the mobile slide-out menu is open
     const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -32,15 +32,11 @@ const Navbar = ({ onNavigate, onLogout }) => {
 
             {/* Main nav — sidebar on desktop, slide-out drawer on mobile */}
             <nav className={`navbar ${isMobileOpen ? 'open' : ''}`}>
-                {/* Page navigation links */}
                 <NavMenu
                     isMobileOpen={isMobileOpen}
                     setIsMobileOpen={setIsMobileOpen}
-                    onNavigate={onNavigate}
                 />
-                {/* Auth section — shows Login/Register or user account with coins */}
                 <NavAuth
-                    onNavigate={onNavigate}
                     onLogout={onLogout}
                     setIsMobileOpen={setIsMobileOpen}
                 />
