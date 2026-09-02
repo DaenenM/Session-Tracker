@@ -143,33 +143,51 @@
     width: 100%;
     border-collapse: collapse;
     font-family: 'Work Sans', sans-serif;
+    /* Digits line up down a column so values are comparable at a glance */
+    font-variant-numeric: tabular-nums;
 }
 
-/* Header */
+/* ---- Header ---- */
+
+/* Solid brand bar so the header clearly separates from the rows beneath it */
 .stats-table thead tr {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #5b6fd8 0%, #7048a8 100%);
 }
 
 .stats-table th {
-    padding: 0.85rem 1.25rem;
+    padding: 0.95rem 1.25rem;
     text-align: left;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: rgba(255, 255, 255, 0.9);
+    /* Full white — the header is a label, and dimming it made the columns hard
+       to read at a glance */
+    color: #fff;
     cursor: pointer;
     user-select: none;
     transition: background 0.2s ease;
     white-space: nowrap;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
 .stats-table th:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* The column being sorted reads as selected */
+.stats-table th.is-sorted {
+    background: rgba(255, 255, 255, 0.16);
 }
 
 .stats-table th span {
     margin-right: 0.3rem;
+}
+
+/* Numeric columns align right so magnitudes are easy to scan */
+.stats-table th.num,
+.stats-table td.num {
+    text-align: right;
 }
 
 .sort-arrow {
@@ -179,7 +197,7 @@
 }
 
 .sort-arrow.inactive {
-    opacity: 0.35;
+    opacity: 0.5;
 }
 
 .sort-arrow.active {
@@ -187,34 +205,55 @@
     color: #fbbf24;
 }
 
-/* Rows */
-.stats-table tbody tr {
-    border-bottom: 1px solid rgba(102, 126, 234, 0.08);
-    transition: background 0.2s ease;
+/* ---- Rows ---- */
+
+/* Zebra striping gives the eye a rail to follow across wide rows */
+.stats-table tbody tr:nth-child(even) {
+    background: rgba(102, 126, 234, 0.035);
 }
 
-.stats-table tbody tr:last-child {
-    border-bottom: none;
+.stats-table tbody tr {
+    transition: background 0.15s ease;
 }
 
 .stats-table tbody tr:hover {
-    background: rgba(102, 126, 234, 0.06);
+    background: rgba(102, 126, 234, 0.12);
 }
 
 .stats-table td {
-    padding: 0.85rem 1.25rem;
-    font-size: 0.9rem;
-    color: #b8c1ec;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.88rem;
+    color: rgba(184, 193, 236, 0.85);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.06);
 }
 
+.stats-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Date is the row's identity, so it carries a little more weight */
+.date-cell {
+    font-weight: 500;
+    color: #cbd5e1;
+    white-space: nowrap;
+}
+
+/* Count is the headline number on this page */
 .count-cell {
+    font-family: 'Outfit', sans-serif;
     font-weight: 700;
+    font-size: 1rem;
     color: #fff;
 }
 
 .avg-cell {
     font-weight: 600;
-    color: #667eea;
+    color: #a5b4fc;
+}
+
+/* Time is supporting detail — muted so the count stands out beside it */
+.time-cell {
+    color: rgba(184, 193, 236, 0.6);
 }
 
 /* Class type badges */
@@ -309,6 +348,11 @@
         padding: 0.7rem 0.85rem;
         font-size: 0.8rem;
     }
+
+    /* Header keeps its emphasis at tablet width */
+    .stats-table th {
+        font-size: 0.82rem;
+    }
 }
 
 /* ============================================
@@ -351,5 +395,177 @@
     .stats-table td {
         padding: 0.65rem 0.75rem;
         font-size: 0.78rem;
+    }
+
+    .stats-table th {
+        font-size: 0.76rem;
+        letter-spacing: 0.04em;
+    }
+
+    /* Keep the count column's emphasis at small sizes */
+    .stats-table td.count-cell {
+        font-size: 0.9rem;
+    }
+}
+/* ============================================
+   COUNT DISTRIBUTION CHART
+   ============================================ */
+
+.stats-chart-section {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    background: rgba(26, 26, 46, 0.7);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    border-radius: 18px;
+}
+
+.stats-chart-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 0.2rem 0;
+}
+
+.stats-chart-sub {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    color: rgba(184, 193, 236, 0.5);
+    margin: 0 0 1.5rem 0;
+}
+
+/* Chart frame: fixed y-axis column on the left, scrollable plot on the right */
+.stats-chart-frame {
+    display: flex;
+    gap: 0.6rem;
+}
+
+/* ---- Y axis ---- */
+
+.stats-y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Matches the track height so ticks align with the gridlines */
+    height: 180px;
+    flex-shrink: 0;
+    padding-right: 0.15rem;
+    border-right: 1px solid rgba(102, 126, 234, 0.18);
+}
+
+.stats-y-tick {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(184, 193, 236, 0.75);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    min-width: 1.4rem;
+    /* Centres each label on its gridline rather than sitting above it */
+    transform: translateY(-50%);
+    line-height: 1;
+}
+
+/* First and last ticks would overflow the frame if shifted like the rest */
+.stats-y-tick:first-child { transform: translateY(0); }
+.stats-y-tick:last-child  { transform: translateY(-100%); }
+
+/* ---- Plot area ---- */
+
+.stats-chart-body {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.stats-gridlines {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.stats-gridline {
+    display: block;
+    height: 1px;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+/* Columns share the width evenly; the chart scrolls sideways rather than
+   crushing the bars when there are many ranges */
+.stats-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+}
+
+.stats-bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1 1 0;
+    min-width: 52px;
+}
+
+/* The track gives every bar the same baseline to grow from */
+.stats-bar-track {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.stats-bar-fill {
+    position: relative;
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    background: linear-gradient(180deg, #818cf8 0%, #667eea 100%);
+    transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The busiest range stands out, since that's the one worth reading */
+.stats-bar-fill.is-peak {
+    background: linear-gradient(180deg, #c084fc 0%, #a78bfa 100%);
+    box-shadow: 0 0 12px rgba(192, 132, 252, 0.35);
+}
+
+
+.stats-bar-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(184, 193, 236, 0.8);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+}
+
+@media (max-width: 768px) {
+    .stats-chart-section {
+        padding: 1.1rem;
+    }
+
+    .stats-bar-track,
+    .stats-y-axis,
+    .stats-gridlines {
+        height: 140px;
+    }
+
+    .stats-bar-col {
+        min-width: 46px;
+    }
+
+    .stats-bar-label {
+        font-size: 0.66rem;
+    }
+
+    .stats-y-tick {
+        font-size: 0.72rem;
     }
 }

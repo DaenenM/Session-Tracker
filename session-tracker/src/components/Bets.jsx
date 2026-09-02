@@ -13,14 +13,20 @@ export default function Bets() {
             <div className="bets-wrapper">
                 <div className="bets-header">
                     <h1 className="bets-title">Bets</h1>
+                    <p className="bets-subtitle">Pick a market, set your stake, then wait for the count</p>
                 </div>
 
-                {/* Top section: Odds left, Place Bet + Your Bets right */}
+                {/* Markets on the left, bet slip on the right. The slip is narrower
+                    and sticks while the longer markets column scrolls past it. */}
                 <div className="bets-content">
-                    <div className="bets-left">
-                        <Odds onSelectBet={setSelectedBet} />
+                    <div className="bets-col bets-col-markets">
+                        <section className="bets-card">
+                            <h2 className="bets-card-title">Markets</h2>
+                            <Odds onSelectBet={setSelectedBet} />
+                        </section>
                     </div>
-                    <div className="bets-right">
+
+                    <div className="bets-col bets-col-slip">
                         <PlaceBet selectedBet={selectedBet} />
                         <YourBets />
                     </div>

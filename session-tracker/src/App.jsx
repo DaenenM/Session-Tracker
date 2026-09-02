@@ -10,6 +10,7 @@ import './css/Bets.css';
 import './css/Leaderboard.css';
 import './css/Shop.css';
 import './css/UserStats.css';
+import './css/CoinFlip.css';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Header';
 import HomePage from './components/Home';
@@ -25,7 +26,9 @@ import Bets from './components/Bets';
 import Leaderboard from './components/Leaderboard';
 import Shop from './components/Shop';
 import UserStats from './components/UserStats';
-import ToDo from './components/ToDo';
+import CoinFlip from './components/CoinFlip';
+import Roulette from './components/Roulette';
+import Games from './components/Games';
 import Admin from './components/Admin';
 
 function AppContent() {
@@ -70,6 +73,24 @@ function AppContent() {
             </RouteGuard>
           } />
 
+          <Route path="/games" element={
+            <RouteGuard>
+              <Games />
+            </RouteGuard>
+          } />
+
+          <Route path="/coinflip" element={
+            <RouteGuard>
+              <CoinFlip />
+            </RouteGuard>
+          } />
+
+          <Route path="/roulette" element={
+            <RouteGuard>
+              <Roulette />
+            </RouteGuard>
+          } />
+
           <Route path="/leaderboard" element={
             <RouteGuard>
               <Leaderboard />
@@ -79,12 +100,6 @@ function AppContent() {
           <Route path="/shop" element={
             <RouteGuard>
               <Shop />
-            </RouteGuard>
-          } />
-
-          <Route path="/todo" element={
-            <RouteGuard>
-              <ToDo />
             </RouteGuard>
           } />
 

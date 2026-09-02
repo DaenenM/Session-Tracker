@@ -85,73 +85,100 @@ export default function PlaceBet({ selectedBet }) {
     const isBetDisabled = isSessionActive || !selectedBet || !betAmount || betAmount <= 0 || placing || Number(betAmount) > userCoins;
 
     return (
-        <div className="place-bet-section">
-            <h3 className="place-bet-title">Place Your Bet</h3>
-
-            {user && (
-                <div className="coin-balance-box">
-                    🪙 <span className="coin-balance-amount">{userCoins}</span> coins
-                </div>
-            )}
+        <div className="bets-card place-bet-section">
+            <div className="place-bet-head">
+                <h2 className="bets-card-title">Bet Slip</h2>
+                {user && (
+                    <span className="coin-balance-box">
+                        🪙 <span className="coin-balance-amount">{userCoins}</span>
+                    </span>
+                )}
+            </div>
 
             {isSessionActive && (
                 <div className="session-active-warning">
-                    🔴 Betting is locked while a session is active
+                    Betting is locked while a session is active
                 </div>
             )}
 
             {selectedBet ? (
                 <div className="selected-bet-box">
                     <div className="selected-bet-row">
-                        <span className="selected-bet-label">Selected Range:</span>
+                        <span className="selected-bet-label">Selection</span>
                         <span className="selected-bet-value">{selectedBet.label}</span>
                     </div>
                     <div className="selected-bet-row">
-                        <span className="selected-bet-label">Win Probability:</span>
+                        <span className="selected-bet-label">Win Chance</span>
                         <span className="selected-bet-probability">{selectedBet.probability}%</span>
+                    </div>
+                    <div className="selected-bet-row">
+                        <span className="selected-bet-label">Multiplier</span>
+                        <span className="selected-bet-value">
+                            {(100 / selectedBet.probability).toFixed(2)}x
+                        </span>
                     </div>
                 </div>
             ) : (
                 <div className="no-selection-warning">
-                    💡 Select a range above to get started
+                    Select a market to build your slip
                 </div>
             )}
 
             <div className="bet-amount-group">
-                <label className="bet-amount-label">Bet Amount (coins)</label>
+                <label className="bet-amount-label" htmlFor="betAmount">Stake</label>
                 <input
+                    id="betAmount"
                     type="number"
                     value={betAmount}
                     onChange={(e) => setBetAmount(e.target.value)}
-                    placeholder="Enter amount..."
+                    placeholder="0"
                     min="1"
                     max={userCoins}
                     className="bet-amount-input"
                     disabled={isSessionActive}
                 />
+                <div className="bet-amount-quick">
+                    {[['25%', 0.25], ['50%', 0.5], ['Max', 1]].map(([label, pct]) => (
+                        <button
+                            key={label}
+                            type="button"
+                            className="bet-amount-quick-btn"
+                            onClick={() => setBetAmount(String(Math.floor(userCoins * pct)))}
+                            disabled={isSessionActive || userCoins <= 0}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
                 {betAmount > 0 && Number(betAmount) > userCoins && (
                     <span className="insufficient-coins-warning">Insufficient coins</span>
                 )}
             </div>
 
-            {betAmount > 0 && selectedBet && Number(betAmount) <= userCoins && (
-                <div className="payout-box">
-                    <div className="payout-row">
-                        <span>Potential Payout:</span>
-                        <span className="payout-amount">{calculatePayout()} coins</span>
+            {/* Reserved slot keeps the button from jumping as the payout appears */}
+            <div className="payout-slot">
+                {betAmount > 0 && selectedBet && Number(betAmount) <= userCoins && (
+                    <div className="payout-box">
+                        <span className="payout-label">Potential Payout</span>
+                        <span className="payout-amount">🪙 {calculatePayout()}</span>
                     </div>
-                    <div className="payout-multiplier">
-                        Multiplier: {(100 / selectedBet.probability).toFixed(2)}x
-                    </div>
-                </div>
-            )}
+                )}
+            </div>
 
             <button
                 onClick={handlePlaceBet}
                 disabled={isBetDisabled}
                 className="place-bet-button"
             >
-                {placing ? '⏳ Placing...' : isSessionActive ? '🔒 Betting Locked' : '🎲 Place Bet'}
+                {placing
+                    ? 'Placing…'
+                    : isSessionActive
+                        ? 'Betting Locked'
+                        : !selectedBet
+                            ? 'Select a Market'
+                            : !betAmount || betAmount <= 0
+                                ? 'Enter a Stake'
+                                : 'Place Bet'}
             </button>
         </div>
     );

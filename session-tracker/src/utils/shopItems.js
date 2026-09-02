@@ -8,10 +8,10 @@ export const SHOP_ITEMS = {
         { id: 'color-green', name: 'Green', type: 'color', value: '#4ade80', price: 75 },
         { id: 'color-purple', name: 'Purple', type: 'color', value: '#c084fc', price: 100 },
         { id: 'color-pink', name: 'Pink', type: 'color', value: '#f472b6', price: 100 },
-        { id: 'color-orange', name: 'Orange', type: 'color', value: '#fb923c', price: 100 },
-        { id: 'color-cyan', name: 'Cyan', type: 'color', value: '#22d3ee', price: 150 },
-        { id: 'color-gold', name: 'Gold', type: 'color', value: '#fbbf24', price: 300 },
-        { id: 'color-rainbow', name: 'Rainbow', type: 'color', value: 'rainbow', price: 500 },
+        { id: 'color-orange', name: 'Orange', type: 'color', value: '#fb923c', price: 200 },
+        { id: 'color-cyan', name: 'Cyan', type: 'color', value: '#22d3ee', price: 200 },
+        { id: 'color-gold', name: 'Gold', type: 'color', value: '#fbbf24', price: 5000 },
+        { id: 'color-rainbow', name: 'Rainbow', type: 'color', value: 'rainbow', price: 7500 },
     ],
     emojis: [
         { id: 'emoji-bread', name: 'Bread', type: 'emoji', value: '🥖', price: 100 },
@@ -23,8 +23,8 @@ export const SHOP_ITEMS = {
         { id: 'emoji-fire', name: 'Fire', type: 'emoji', value: '🔥', price: 300 },
         { id: 'emoji-diamond', name: 'Diamond', type: 'emoji', value: '💎', price: 325 },
         { id: 'emoji-ghost', name: 'Ghost', type: 'emoji', value: '👻', price: 350 },
-        { id: 'emoji-moneywings', name: 'Money Wings', type: 'emoji', value: '💸', price: 500 },
-        { id: 'emoji-crown', name: 'Crown', type: 'emoji', value: '👑', price: 1000 },
+        { id: 'emoji-moneywings', name: 'Money Wings', type: 'emoji', value: '💸', price: 2500 },
+        { id: 'emoji-crown', name: 'Crown', type: 'emoji', value: '👑', price: 5000 },
         
     ],
 };

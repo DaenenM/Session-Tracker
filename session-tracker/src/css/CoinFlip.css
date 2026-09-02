@@ -1,0 +1,536 @@
+/* src/css/CoinFlip.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+
+.coinflip-container {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2vh;
+    animation: coinflipFadeIn 0.6s ease-out both;
+}
+
+@keyframes coinflipFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.coinflip-wrapper {
+    background: rgba(26, 26, 46, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    max-width: 520px;
+    width: 100%;
+    animation: coinflipSlideUp 0.6s ease-out;
+}
+
+@keyframes coinflipSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.coinflip-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.coinflip-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+
+.coinflip-subtitle {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(184, 193, 236, 0.55);
+    margin: 0;
+}
+
+/* ============================================
+   COIN STAGE
+   ============================================ */
+
+.coinflip-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    /* Perspective makes the Y-rotation read as a coin turning in space
+       rather than a flat card squashing horizontally */
+    perspective: 1000px;
+    margin-bottom: 0.5rem;
+}
+
+.coinflip-coin {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    transform-style: preserve-3d;
+    /* The inline transform supplies the target angle; this eases it into place.
+       A long cubic-bezier tail makes the coin decelerate as it settles. */
+    transition: transform 2.6s cubic-bezier(0.15, 0.9, 0.25, 1);
+}
+
+/* Vertical hop so the coin arcs up and back down while it spins */
+.coinflip-coin.is-flipping {
+    animation: coinflipHop 2.6s cubic-bezier(0.33, 0, 0.66, 1);
+}
+
+@keyframes coinflipHop {
+    0%   { margin-top: 0; }
+    30%  { margin-top: -55px; }
+    55%  { margin-top: -70px; }
+    100% { margin-top: 0; }
+}
+
+.coinflip-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    /* Hides the reverse side so only the facing side is ever visible */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    box-shadow:
+        inset 0 -6px 14px rgba(0, 0, 0, 0.28),
+        inset 0 6px 14px rgba(255, 255, 255, 0.25),
+        0 10px 28px rgba(0, 0, 0, 0.4);
+}
+
+/* Heads rests at 0deg — the face shown when rotation is a multiple of 360 */
+.coinflip-face.heads {
+    background: linear-gradient(145deg, #fde68a 0%, #f5b301 45%, #b8860b 100%);
+    border: 4px solid rgba(255, 255, 255, 0.35);
+}
+
+/* Tails is pre-rotated 180deg so it faces out when the coin lands on 180 */
+.coinflip-face.tails {
+    background: linear-gradient(145deg, #cbd5e1 0%, #94a3b8 45%, #556070 100%);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    transform: rotateY(180deg);
+}
+
+.coinflip-face-icon {
+    font-size: 3rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+}
+
+.coinflip-face-label {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(0, 0, 0, 0.55);
+}
+
+/* ============================================
+   RESULT
+   ============================================ */
+
+/* Fixed height keeps the controls from jumping when the banner appears */
+.coinflip-result-slot {
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.coinflip-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 14px;
+    animation: coinflipResultPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes coinflipResultPop {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.coinflip-result.won {
+    background: rgba(74, 222, 128, 0.12);
+    border: 1px solid rgba(74, 222, 128, 0.35);
+}
+
+.coinflip-result.lost {
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}
+
+.coinflip-result-face {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(184, 193, 236, 0.6);
+}
+
+.coinflip-result-verdict {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.coinflip-result.won .coinflip-result-verdict  { color: #4ade80; }
+.coinflip-result.lost .coinflip-result-verdict { color: #f87171; }
+
+/* ============================================
+   SECTIONS / LABELS
+   ============================================ */
+
+.coinflip-section {
+    margin-bottom: 1.25rem;
+}
+
+.coinflip-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(184, 193, 236, 0.5);
+    display: block;
+    margin-bottom: 0.6rem;
+}
+
+.coinflip-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.coinflip-label-row .coinflip-label {
+    margin-bottom: 0.6rem;
+}
+
+.coinflip-balance {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #facc15;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   SIDE PICKER
+   ============================================ */
+
+.coinflip-choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.coinflip-choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    background: rgba(102, 126, 234, 0.06);
+    color: rgba(184, 193, 236, 0.75);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.coinflip-choice-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+}
+
+.coinflip-choice:hover:not(:disabled) {
+    background: rgba(102, 126, 234, 0.12);
+    color: #fff;
+}
+
+.coinflip-choice.heads.active {
+    border-color: #f5b301;
+    background: rgba(245, 179, 1, 0.14);
+    color: #fde68a;
+}
+
+.coinflip-choice.tails.active {
+    border-color: #94a3b8;
+    background: rgba(148, 163, 184, 0.14);
+    color: #e2e8f0;
+}
+
+.coinflip-choice:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   BET INPUT
+   ============================================ */
+
+.coinflip-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    background: rgba(15, 12, 41, 0.5);
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.2s ease;
+}
+
+.coinflip-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.coinflip-input::placeholder {
+    color: rgba(184, 193, 236, 0.25);
+}
+
+.coinflip-input:disabled {
+    opacity: 0.5;
+}
+
+.coinflip-quick {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+}
+
+.coinflip-quick-btn {
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    background: rgba(102, 126, 234, 0.06);
+    color: rgba(184, 193, 236, 0.7);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.coinflip-quick-btn:hover:not(:disabled) {
+    background: rgba(102, 126, 234, 0.14);
+    color: #fff;
+}
+
+.coinflip-quick-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   PAYOUT PREVIEW
+   ============================================ */
+
+.coinflip-preview {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    background: rgba(102, 126, 234, 0.06);
+    border: 1px solid rgba(102, 126, 234, 0.12);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(184, 193, 236, 0.6);
+}
+
+.coinflip-preview-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #4ade80;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   FLIP BUTTON
+   ============================================ */
+
+.coinflip-flip-btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-variant-numeric: tabular-nums;
+}
+
+.coinflip-flip-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(102, 126, 234, 0.4);
+}
+
+.coinflip-flip-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.coinflip-flip-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.coinflip-error {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    border-radius: 10px;
+    padding: 0.6rem 0.85rem;
+    margin: 0 0 1rem 0;
+    text-align: center;
+}
+
+/* ============================================
+   HISTORY
+   ============================================ */
+
+.coinflip-history {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.coinflip-history-title {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(184, 193, 236, 0.45);
+    display: block;
+    margin-bottom: 0.65rem;
+}
+
+.coinflip-history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.coinflip-history-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 10px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.coinflip-history-item.won {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    color: #4ade80;
+}
+
+.coinflip-history-item.lost {
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    color: #f87171;
+}
+
+.coinflip-history-face {
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+/* Respect users who ask for less animation — the coin still lands on the
+   correct face, it just snaps there instead of spinning */
+@media (prefers-reduced-motion: reduce) {
+    .coinflip-coin {
+        transition: transform 0.3s ease;
+    }
+
+    .coinflip-coin.is-flipping {
+        animation: none;
+    }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 600px) {
+    .coinflip-container {
+        padding: 1rem;
+    }
+
+    .coinflip-wrapper {
+        padding: 1.5rem 1.25rem;
+        border-radius: 18px;
+    }
+
+    .coinflip-title {
+        font-size: 1.9rem;
+    }
+
+    .coinflip-stage {
+        height: 170px;
+    }
+
+    .coinflip-coin {
+        width: 120px;
+        height: 120px;
+    }
+
+    .coinflip-face-icon {
+        font-size: 2.4rem;
+    }
+
+    .coinflip-input {
+        font-size: 1.25rem;
+    }
+}

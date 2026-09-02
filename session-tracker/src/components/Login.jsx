@@ -1,9 +1,11 @@
 // src/components/Login.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../css/Auth.css';
 
-export default function Login({ onNavigate }) {
+export default function Login() {
+  const navigate = useNavigate();
   const { login, loginWithGoogle, error, setError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,12 +21,8 @@ export default function Login({ onNavigate }) {
     try {
       await login(email, password);
       console.log('Login successful!');
-      // Small delay to ensure auth state is updated
-      setTimeout(() => {
-        if (onNavigate) {
-          onNavigate('/');
-        }
-      }, 200);
+      // replace:true so Back doesn't return to the form they just completed
+      navigate('/', { replace: true });
     } catch (err) {
       console.error('Login error:', err);
       console.error('Error code:', err.code);
@@ -39,12 +37,8 @@ export default function Login({ onNavigate }) {
     try {
       await loginWithGoogle();
       console.log('Google login successful!');
-      // Small delay to ensure auth state is updated
-      setTimeout(() => {
-        if (onNavigate) {
-          onNavigate('/');
-        }
-      }, 200);
+      // replace:true so Back doesn't return to the form they just completed
+      navigate('/', { replace: true });
     } catch (err) {
       console.error('Google login error:', err);
       // Error is handled in AuthContext
@@ -128,7 +122,7 @@ export default function Login({ onNavigate }) {
           <button
             type="button"
             className="auth-footer-link"
-            onClick={() => onNavigate?.('/register')}
+            onClick={() => navigate('/register')}
           >
             Register
           </button>

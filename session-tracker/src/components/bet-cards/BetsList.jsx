@@ -58,8 +58,11 @@ export default function BetsList() {
     }
 
     return (
-        <div className="bets-list-section">
-            <h3 className="bets-list-title">All Bets</h3>
+        <div className="bets-card bets-list-section">
+            <div className="bets-list-head">
+                <h2 className="bets-card-title">Live Bets</h2>
+                {bets.length > 0 && <span className="bets-list-pill">{bets.length}</span>}
+            </div>
 
             {bets.length === 0 ? (
                 <div className="bets-list-empty">No bets placed yet.</div>
@@ -69,9 +72,9 @@ export default function BetsList() {
                         <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Range</th>
-                                <th>Amount</th>
-                                <th>Multiplier</th>
+                                <th>Market</th>
+                                <th>Stake</th>
+                                <th>Mult</th>
                                 <th>Payout</th>
                             </tr>
                         </thead>

@@ -27,7 +27,7 @@
     padding: 2rem;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(102, 126, 234, 0.15);
-    max-width: 700px;
+    max-width: 1080px;
     width: 100%;
     animation: lbSlideUp 0.6s ease-out;
 }
@@ -300,5 +300,174 @@
     .leaderboard-you-tag {
         font-size: 0.6rem;
         padding: 0.1rem 0.35rem;
+    }
+}
+
+/* ============================================
+   RECORD CARDS (largest bet / largest win)
+   ============================================ */
+
+/* Section heading so the tile wall reads as one labelled block */
+.lb-records-section {
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: lbRecordUp 0.5s ease-out forwards;
+    animation-delay: 0.15s;
+}
+
+.lb-records-title {
+    display: block;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: rgba(184, 193, 236, 0.45);
+    margin-bottom: 0.85rem;
+}
+
+/* Auto-fit keeps every tile the same size while the count varies with
+   how much data exists — no orphan card stretched across a whole row. */
+.lb-records {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+    gap: 0.85rem;
+}
+
+@keyframes lbRecordUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.lb-record-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1rem 1.1rem;
+    border-radius: 14px;
+    background: rgba(26, 26, 46, 0.7);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    transition: all 0.25s ease;
+    min-width: 0;
+}
+
+.lb-record-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* Tone tints each card toward its meaning without shouting */
+.lb-record-card.bet:hover   { border-color: rgba(102, 126, 234, 0.4); }
+.lb-record-card.win:hover   { border-color: rgba(250, 204, 21, 0.4); }
+.lb-record-card.upset:hover { border-color: rgba(167, 139, 250, 0.4); }
+.lb-record-card.loss:hover  { border-color: rgba(248, 113, 113, 0.35); }
+
+.lb-record-card.upset .lb-record-value { color: #a78bfa; }
+.lb-record-card.loss .lb-record-value  { color: #f87171; }
+
+.lb-record-head {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.lb-record-icon {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.lb-record-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(184, 193, 236, 0.5);
+}
+
+.lb-record-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+    color: #fff;
+    /* Long values ("1,234 essentiallys") must not widen the grid column */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lb-record-card.win .lb-record-value { color: #facc15; }
+
+.lb-record-holder {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(102, 126, 234, 0.12);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #fff;
+    min-width: 0;
+}
+
+/* The name can be long; let it truncate rather than push the tag out */
+.lb-record-holder > :first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.lb-record-source {
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.12);
+    border-radius: 6px;
+    padding: 0.12rem 0.45rem;
+}
+
+.lb-record-meta {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: rgba(184, 193, 236, 0.45);
+}
+
+.lb-record-unknown {
+    color: rgba(184, 193, 236, 0.4);
+    font-weight: 500;
+}
+
+
+@media (max-width: 600px) {
+    .lb-records {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.6rem;
+    }
+
+    .lb-records-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .lb-record-card {
+        padding: 0.85rem 0.9rem;
+    }
+
+    .lb-record-value {
+        font-size: 1.1rem;
+    }
+
+    .lb-record-label {
+        font-size: 0.6rem;
+    }
+
+    .lb-record-holder {
+        font-size: 0.72rem;
     }
 }

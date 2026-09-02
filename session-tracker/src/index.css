@@ -4,7 +4,7 @@
 @import "tailwindcss";
 
 :root {
-    --navbar-width: 240px;
+    --navbar-width: 260px;   /* must match .navbar width in Header.css */
     --primary-color: #667eea;
     --secondary-color: #764ba2;
     --text-color: #b8c1ec;
@@ -76,7 +76,8 @@ p {
 @media (max-width: 768px) {
     .page-container {
         margin-left: 0;
-        margin-top: 4.5rem;
+        /* Matches the fixed .navbar-topbar height so content starts just below it */
+        margin-top: 58px;
         padding: 0;
     }
 }

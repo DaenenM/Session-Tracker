@@ -42,22 +42,6 @@
 }
 
 /* ============================================
-   DIVIDER
-   ============================================ */
-
-.navbar-divider {
-    height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        rgba(129, 140, 248, 0.2) 30%,
-        rgba(192, 132, 252, 0.15) 70%,
-        transparent 100%
-    );
-    margin: 0.6rem 1.25rem;
-}
-
-/* ============================================
    NAV MENU
    ============================================ */
 
@@ -73,30 +57,51 @@
 }
 
 .navbar-link {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
     color: rgba(184, 193, 236, 0.7);
     text-decoration: none;
     font-family: 'Work Sans', sans-serif;
-    padding: 0.85rem 1.5rem;
-    font-size: 1.1rem;
+    padding: 0.7rem 1.5rem;
+    font-size: 1rem;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease, background 0.2s ease;
     position: relative;
-    overflow: hidden;
     letter-spacing: 0.01em;
 }
 
+/* Icons sit in a fixed-width column so every label starts on the same x */
+.navbar-link-icon {
+    width: 1.35rem;
+    font-size: 1.05rem;
+    line-height: 1;
+    text-align: center;
+    flex-shrink: 0;
+    filter: grayscale(0.45);
+    opacity: 0.85;
+    transition: filter 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-link-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Left accent bar — hidden until hover, pinned open when active */
 .navbar-link::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
+    top: 50%;
+    height: 0;
+    width: 3px;
     background: linear-gradient(180deg, #818cf8 0%, #c084fc 100%);
-    transform: translateX(-4px);
-    transition: transform 0.25s ease;
-    border-radius: 0 2px 2px 0;
+    border-radius: 0 3px 3px 0;
+    transform: translateY(-50%);
+    transition: height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar-link:hover {
@@ -105,8 +110,47 @@
 }
 
 .navbar-link:hover::before {
-    transform: translateX(0);
-    box-shadow: 0 0 12px rgba(129, 140, 248, 0.4);
+    height: 55%;
+}
+
+.navbar-link:hover .navbar-link-icon {
+    filter: grayscale(0);
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+/* ============================================
+   ACTIVE PAGE
+   ============================================ */
+
+/* The current page reads as selected, not just hovered: full-height accent,
+   a brighter label, and a tinted row that persists without the pointer */
+.navbar-link.active {
+    color: #fff;
+    font-weight: 600;
+    background: linear-gradient(
+        90deg,
+        rgba(129, 140, 248, 0.18) 0%,
+        rgba(192, 132, 252, 0.06) 55%,
+        transparent 100%
+    );
+}
+
+.navbar-link.active::before {
+    height: 100%;
+    box-shadow: 0 0 14px rgba(129, 140, 248, 0.5);
+}
+
+.navbar-link.active .navbar-link-icon {
+    filter: grayscale(0);
+    opacity: 1;
+}
+
+/* Keyboard focus must be visible even where hover never fires */
+.navbar-link:focus-visible {
+    outline: 2px solid rgba(129, 140, 248, 0.8);
+    outline-offset: -2px;
+    color: #fff;
 }
 
 /* ============================================
@@ -273,14 +317,14 @@
 }
 
 /* ============================================
-   HIDE MOBILE ELEMENTS ON DESKTOP
+   MOBILE TOP BAR (hidden on desktop)
    ============================================ */
 
-.mobile-banner {
+.navbar-topbar {
     display: none;
 }
 
-.navbar-toggle {
+.navbar-overlay {
     display: none;
 }
 
@@ -289,123 +333,150 @@
    ============================================ */
 
 @media (max-width: 768px) {
-    .navbar {
+    /* Fixed top bar carries the brand and the toggle, so the drawer no longer
+       has to leave room for a floating button */
+    .navbar-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
         right: 0;
-        left: auto;
-        transform: translateX(100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        width: 220px;
-        padding: 4.5rem 0 2rem;
-        background: linear-gradient(180deg, #12101f 0%, #1a1835 50%, #161432 100%);
-        border-right: none;
-        border-left: 1px solid rgba(129, 140, 248, 0.08);
-
-        /* ADD THIS */
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
+        height: 58px;
+        padding: 0 0.5rem 0 1.1rem;
+        background: rgba(18, 16, 31, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(129, 140, 248, 0.12);
+        z-index: 1200;
     }
 
-    .navbar-brand {
-        display: none;
+    .navbar-topbar-brand {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #c084fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Animated hamburger: three bars that fold into an X */
+    .navbar-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        background: transparent;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        padding: 0;
+        transition: background 0.2s ease;
+    }
+
+    .navbar-toggle:hover,
+    .navbar-toggle:focus-visible {
+        background: rgba(129, 140, 248, 0.14);
+        outline: none;
+    }
+
+    .navbar-toggle-bars {
+        position: relative;
+        width: 20px;
+        height: 14px;
+    }
+
+    .navbar-toggle-bars span {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        border-radius: 2px;
+        background: #c7d2fe;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+    }
+
+    .navbar-toggle-bars span:nth-child(1) { top: 0; }
+    .navbar-toggle-bars span:nth-child(2) { top: 6px; }
+    .navbar-toggle-bars span:nth-child(3) { top: 12px; }
+
+    .navbar-toggle.open .navbar-toggle-bars span:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+
+    .navbar-toggle.open .navbar-toggle-bars span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .navbar-toggle.open .navbar-toggle-bars span:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+    /* Drawer slides in from the right, beneath the top bar but above the overlay */
+    .navbar {
+        left: auto;
+        right: 0;
+        top: 0;
+        width: min(78vw, 300px);
+        height: 100vh;
+        padding: calc(58px + 1rem) 0 1.5rem;
+        transform: translateX(100%);
+        transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+        border-right: none;
+        border-left: 1px solid rgba(129, 140, 248, 0.12);
+        box-shadow: -8px 0 40px rgba(0, 0, 0, 0.5);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        z-index: 1100;
     }
 
     .navbar.open {
         transform: translateX(0);
     }
 
-    .navbar-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    /* Sidebar brand is redundant now the top bar shows it */
+    .navbar-brand {
+        display: none;
+    }
+
+    /* Overlay sits between the page and the drawer. It fades rather than
+       mounting/unmounting so closing animates instead of snapping. */
+    .navbar-overlay {
+        display: block;
         position: fixed;
-        top: 0.85rem;
-        right: 0.75rem;
-        z-index: 1102;
-        background: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%);
-        border: none;
-        color: #fff;
-        font-size: 1.2rem;
-        padding: 0;
-        border-radius: 10px;
-        cursor: pointer;
-        box-shadow: 0 4px 16px rgba(129, 140, 248, 0.35);
-        transition: all 0.3s ease;
-        width: 44px;
-        height: 44px;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(3px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 1050;
     }
 
-    .navbar-toggle:hover {
-        box-shadow: 0 6px 24px rgba(129, 140, 248, 0.5);
+    .navbar-overlay.visible {
+        opacity: 1;
+        visibility: visible;
     }
 
-    .navbar-toggle.open {
-        transform: rotate(90deg);
-        background: linear-gradient(135deg, #c084fc 0%, #a78bfa 50%, #818cf8 100%);
+    /* Bigger tap targets — 44px is the minimum comfortable touch size */
+    .navbar-link {
+        padding: 0.95rem 1.4rem;
+        font-size: 1rem;
+        gap: 1rem;
+    }
+
+    .navbar-link-icon {
+        font-size: 1.15rem;
+        width: 1.5rem;
     }
 
     .navbar-menu {
-        list-style: none;
-        margin: 0;
         padding: 0.25rem 0;
-        flex: 0;
     }
 
-    .navbar-link {
-        padding: 0.7rem 1.25rem;
-        font-size: 0.88rem;
-    }
-
-    .navbar-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        z-index: 900;
-        animation: navOverlayIn 0.3s ease-out;
-    }
-
-    @keyframes navOverlayIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    .mobile-banner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4rem;
-        background: linear-gradient(180deg, #12101f 0%, #1a1835 100%);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 1.25rem;
-        z-index: 1101;
-        transition: all 0.3s ease;
-        transform: translateX(0);
-        border-bottom: 1px solid rgba(129, 140, 248, 0.06);
-    }
-
-    .mobile-banner.collapsed {
-        transform: translateX(100%);
-    }
-
-    .mobile-banner h1 {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.35rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #c084fc 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        transition: opacity 0.3s ease;
-    }
-
-    .mobile-banner.collapsed h1 {
-        opacity: 0;
-    }
-
-    /* Compact account section */
     .navbar-account {
         padding: 0 0.65rem;
     }
@@ -468,9 +539,5 @@
     .navbar-auth {
         padding: 0.5rem 0;
         margin-top: 0;
-    }
-
-    .navbar-divider {
-        margin: 0.5rem 1rem;
     }
 }

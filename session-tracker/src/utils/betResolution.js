@@ -10,16 +10,26 @@ import { calculateLevel } from './leveling';
 import { getXpForBet } from './leveling';
 
 // Checks if a bet's range matches the final session count
-// Supports "over X", "under X", and "low-high" range formats
+// Supports "over X", "under X", "low-high", and open-ended "X+" formats
 export const isWinningBet = (range, finalCount) => {
-    if (range.toLowerCase().startsWith('over')) {
-        return finalCount > parseFloat(range.split(' ')[1]);
+    if (typeof range !== 'string') return false;
+    const label = range.trim();
+
+    if (label.toLowerCase().startsWith('over')) {
+        return finalCount > parseFloat(label.split(' ')[1]);
     }
-    if (range.toLowerCase().startsWith('under')) {
-        return finalCount < parseFloat(range.split(' ')[1]);
+    if (label.toLowerCase().startsWith('under')) {
+        return finalCount < parseFloat(label.split(' ')[1]);
+    }
+    // Open-ended top range, e.g. "241+". Without this it falls through to the
+    // range branch, splits into one part, and always returns false — meaning a
+    // correct bet on the highest bucket never paid out.
+    if (label.endsWith('+')) {
+        const low = parseFloat(label.slice(0, -1).trim());
+        return Number.isFinite(low) && finalCount >= low;
     }
     // Handle "X-Y" or "X–Y" (hyphen or en-dash)
-    const parts = range.split(/[–\-]/);
+    const parts = label.split(/[–-]/);
     if (parts.length === 2) {
         const low = parseFloat(parts[0].trim());
         const high = parseFloat(parts[1].trim());

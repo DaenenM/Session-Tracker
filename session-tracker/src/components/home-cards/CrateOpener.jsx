@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { doc, runTransaction, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useAuth } from '../../context/AuthContext';
-import { rollCrate, generateReelStrip, getRarityColor } from '../../utils/crateRewards';
+import { rollCrate, generateReelStrip, getRarityColor, getLootTable } from '../../utils/crateRewards';
 import { calculateLevel } from '../../utils/leveling';
 import '../../css/Crate.css';
 
@@ -20,7 +20,13 @@ export default function CrateOpener({ onClose }) {
     const [canOpen, setCanOpen] = useState(false);
     const [timeLeft, setTimeLeft] = useState('');
     const [loading, setLoading] = useState(true);
+    // Loot table is collapsed by default so it doesn't push the reel off screen
+    const [showOdds, setShowOdds] = useState(false);
     const reelRef = useRef(null);
+
+    // Derived from the same weights rollCrate uses, so the odds shown always
+    // match the real drop rates
+    const lootTable = getLootTable();
 
     // Check cooldown on mount
     useEffect(() => {
@@ -228,6 +234,47 @@ export default function CrateOpener({ onClose }) {
                         </span>
                     </div>
                 )}
+
+                {/* Loot table — what can drop, and how likely each is */}
+                <div className="crate-odds">
+                    <button
+                        type="button"
+                        className="crate-odds-toggle"
+                        onClick={() => setShowOdds((v) => !v)}
+                        aria-expanded={showOdds}
+                    >
+                        <span>Drop Rates</span>
+                        <span className={`crate-odds-chevron ${showOdds ? 'open' : ''}`}>▾</span>
+                    </button>
+
+                    {showOdds && (
+                        <div className="crate-odds-list">
+                            {lootTable.map((group) => (
+                                <div key={group.rarity} className="crate-odds-group">
+                                    <div
+                                        className="crate-odds-group-head"
+                                        style={{ '--rarity-color': group.color }}
+                                    >
+                                        <span className="crate-odds-rarity">{group.rarity}</span>
+                                        <span className="crate-odds-group-total">
+                                            {group.totalChance.toFixed(2)}%
+                                        </span>
+                                    </div>
+                                    {group.items.map((item) => (
+                                        <div key={item.id} className="crate-odds-row">
+                                            <span className="crate-odds-label">{item.label}</span>
+                                            <span className="crate-odds-chance">
+                                                {item.chance < 0.1
+                                                    ? item.chance.toFixed(3)
+                                                    : item.chance.toFixed(2)}%
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
 
                 {/* Action buttons */}
                 <div className="crate-actions">

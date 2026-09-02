@@ -103,6 +103,9 @@ export default function Shop() {
                     {item.type === 'color' ? (
                         item.value === 'rainbow' ? (
                             <span className="shop-color-swatch shop-color-rainbow"></span>
+                        ) : item.value === '#fbbf24' ? (
+                            // Gold previews its shine so the swatch matches the name
+                            <span className="shop-color-swatch shop-color-gold"></span>
                         ) : (
                             <span className="shop-color-swatch" style={{ background: item.value }}></span>
                         )

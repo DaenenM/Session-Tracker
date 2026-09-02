@@ -1,0 +1,684 @@
+/* src/css/Roulette.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+
+.roulette-container {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2vh;
+    animation: rlFadeIn 0.6s ease-out both;
+}
+
+@keyframes rlFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.roulette-wrapper {
+    background: rgba(26, 26, 46, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    max-width: 980px;
+    width: 100%;
+    animation: rlSlideUp 0.6s ease-out;
+}
+
+@keyframes rlSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+
+.roulette-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.roulette-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+
+
+/* ============================================
+   REEL
+   ============================================ */
+
+.roulette-reel-window {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    background: rgba(0, 0, 0, 0.35);
+    height: 96px;
+    margin-bottom: 1rem;
+}
+
+/* Faded edges so tiles appear to emerge from and vanish into the frame */
+.roulette-reel-window::before,
+.roulette-reel-window::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 72px;
+    z-index: 4;
+    pointer-events: none;
+}
+
+.roulette-reel-window::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(20, 18, 38, 0.98), transparent);
+}
+
+.roulette-reel-window::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(20, 18, 38, 0.98), transparent);
+}
+
+/* The marker the winning tile stops under */
+.roulette-marker {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    margin-left: -1.5px;
+    background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    box-shadow: 0 0 14px rgba(251, 191, 36, 0.7);
+    z-index: 6;
+    pointer-events: none;
+}
+
+/* Arrow caps top and bottom */
+.roulette-marker::before,
+.roulette-marker::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+}
+
+.roulette-marker::before {
+    top: 0;
+    border-top: 9px solid #fbbf24;
+}
+
+.roulette-marker::after {
+    bottom: 0;
+    border-bottom: 9px solid #fbbf24;
+}
+
+/* translateX(0) is the reset position; the component drives the transform.
+   The track is centred so the marker sits over a tile's midpoint. */
+.roulette-reel-track {
+    display: flex;
+    gap: 8px;              /* must match ITEM_GAP in Roulette.jsx */
+    align-items: center;
+    height: 100%;
+    padding-left: 50%;     /* puts index 0 under the marker at translateX(0) */
+    will-change: transform;
+}
+
+.roulette-tile {
+    width: 74px;           /* must match ITEM_WIDTH in Roulette.jsx */
+    height: 68px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.roulette-tile-red {
+    background: linear-gradient(160deg, #ef4444 0%, #b91c1c 100%);
+}
+
+.roulette-tile-black {
+    background: linear-gradient(160deg, #374151 0%, #111827 100%);
+}
+
+.roulette-tile-green {
+    background: linear-gradient(160deg, #22c55e 0%, #15803d 100%);
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.35);
+}
+
+/* The tile that was actually paid out, once the reel settles */
+.roulette-tile.is-winner {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 2px #fbbf24, 0 0 22px rgba(251, 191, 36, 0.6);
+    animation: rlWinnerPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes rlWinnerPop {
+    from { transform: scale(1); }
+    to   { transform: scale(1.08); }
+}
+
+/* ============================================
+   SECTIONS / LABELS
+   ============================================ */
+
+.roulette-section {
+    margin-bottom: 1.25rem;
+}
+
+.roulette-label {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(184, 193, 236, 0.5);
+    display: block;
+    margin-bottom: 0.6rem;
+}
+
+.roulette-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.roulette-balance {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #facc15;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   COLOUR PICKER
+   ============================================ */
+
+.roulette-color {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.9rem 0.5rem;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.2s ease;
+    color: #fff;
+}
+
+.roulette-color-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.roulette-color-odds {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+}
+
+.rc-red {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+}
+
+.rc-black {
+    background: rgba(55, 65, 81, 0.35);
+    border-color: rgba(148, 163, 184, 0.25);
+    color: #cbd5e1;
+}
+
+.rc-green {
+    background: rgba(34, 197, 94, 0.14);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #86efac;
+}
+
+.roulette-color:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.rc-red.active {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: #ef4444;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.3);
+}
+
+.rc-black.active {
+    background: rgba(71, 85, 105, 0.6);
+    border-color: #94a3b8;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(148, 163, 184, 0.25);
+}
+
+.rc-green.active {
+    background: rgba(34, 197, 94, 0.3);
+    border-color: #22c55e;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(34, 197, 94, 0.3);
+}
+
+.roulette-color:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   STAKE
+   ============================================ */
+
+.roulette-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    background: rgba(15, 12, 41, 0.5);
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.2s ease;
+}
+
+.roulette-input:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.roulette-input::placeholder {
+    color: rgba(184, 193, 236, 0.25);
+}
+
+.roulette-input:disabled {
+    opacity: 0.5;
+}
+
+.roulette-quick {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+}
+
+.roulette-quick-btn {
+    padding: 0.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    background: rgba(102, 126, 234, 0.06);
+    color: rgba(184, 193, 236, 0.7);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.roulette-quick-btn:hover:not(:disabled) {
+    background: rgba(102, 126, 234, 0.14);
+    color: #fff;
+}
+
+.roulette-quick-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   HISTORY
+   ============================================ */
+
+.roulette-history {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(102, 126, 234, 0.15);
+}
+
+.roulette-history-title {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(184, 193, 236, 0.45);
+    display: block;
+    margin-bottom: 0.65rem;
+}
+
+.roulette-history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+/* The reel still lands on the correct tile — it just gets there quickly */
+@media (prefers-reduced-motion: reduce) {
+    .roulette-tile.is-winner {
+        animation: none;
+    }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 600px) {
+    .roulette-container {
+        padding: 1rem;
+    }
+
+    .roulette-wrapper {
+        padding: 1.5rem 1.25rem;
+        border-radius: 18px;
+    }
+
+    .roulette-title {
+        font-size: 1.9rem;
+    }
+
+    .roulette-reel-window {
+        height: 84px;
+    }
+
+    .roulette-tile {
+        height: 60px;
+    }
+
+    .roulette-input {
+        font-size: 1.25rem;
+    }
+
+    .roulette-color-odds {
+        font-size: 0.64rem;
+    }
+}
+
+/* Error banner for a rejected bet */
+.roulette-error {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    border-radius: 10px;
+    padding: 0.6rem 0.85rem;
+    margin: 0 0 1rem 0;
+    text-align: center;
+}
+
+/* Inline colour words, e.g. "You backed red" */
+.rp-red   { color: #f87171; }
+.rp-black { color: #cbd5e1; }
+.rp-green { color: #4ade80; }
+
+/* Column hooks — the shared .roulette-column supplies the layout, these exist
+   so a single column can be targeted without relying on grid position */
+.rcol-red,
+.rcol-green,
+.rcol-black {
+    min-width: 0;
+}
+
+/* ============================================
+   ROUND STATUS
+   ============================================ */
+
+.roulette-status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    background: rgba(15, 12, 41, 0.45);
+    border: 1px solid rgba(102, 126, 234, 0.15);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(184, 193, 236, 0.75);
+}
+
+.roulette-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.roulette-dot.live {
+    background: #4ade80;
+    animation: rlPulse 1.6s ease-in-out infinite;
+}
+
+.roulette-dot.offline {
+    background: #f87171;
+}
+
+@keyframes rlPulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+}
+
+.roulette-status-text strong {
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+.roulette-round-id {
+    margin-left: auto;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(184, 193, 236, 0.35);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   LAST 10 RESULTS
+   ============================================ */
+
+.roulette-history {
+    margin-bottom: 1.5rem;
+}
+
+.roulette-history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+/* Newest first, so the strip reads left to right like a feed */
+.roulette-history-chip {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.rhc-red   { background: linear-gradient(160deg, #ef4444, #b91c1c); }
+.rhc-black { background: linear-gradient(160deg, #374151, #111827); }
+.rhc-green {
+    background: linear-gradient(160deg, #22c55e, #15803d);
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.45);
+}
+
+/* ============================================
+   BETTING BOARD — red / green / black
+   ============================================ */
+
+/* Green is the middle column so the board mirrors the wheel */
+.roulette-board {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr 1fr;
+    gap: 0.85rem;
+    align-items: start;
+    margin-top: 1.25rem;
+}
+
+.roulette-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+.roulette-pool {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0 0.15rem;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+}
+
+.roulette-pool-count {
+    color: rgba(184, 193, 236, 0.45);
+}
+
+.roulette-pool-total {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: #facc15;
+    font-variant-numeric: tabular-nums;
+}
+
+.roulette-bet-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    /* Caps the column height so a busy round can't push the page down */
+    max-height: 190px;
+    overflow-y: auto;
+}
+
+.roulette-bet-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.4rem 0.55rem;
+    border-radius: 8px;
+    background: rgba(15, 12, 41, 0.4);
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.75rem;
+    min-width: 0;
+}
+
+.roulette-bet-row.is-you {
+    border-color: rgba(102, 126, 234, 0.45);
+    background: rgba(102, 126, 234, 0.12);
+}
+
+.roulette-bet-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.roulette-bet-amount {
+    flex-shrink: 0;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: #facc15;
+    font-variant-numeric: tabular-nums;
+}
+
+.roulette-bet-empty {
+    padding: 0.5rem;
+    text-align: center;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(184, 193, 236, 0.3);
+    border: 1px dashed rgba(102, 126, 234, 0.15);
+    border-radius: 8px;
+}
+
+
+/* Result of the round just played — same footprint as .roulette-placed so the
+   layout doesn't shift when one replaces the other */
+.roulette-outcome {
+    text-align: center;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.82rem;
+    border-radius: 10px;
+    padding: 0.55rem;
+    margin: 0 0 1rem 0;
+    border: 1px solid transparent;
+    animation: rlOutcomePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes rlOutcomePop {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.roulette-outcome strong {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.roulette-outcome.won {
+    color: #86efac;
+    background: rgba(74, 222, 128, 0.1);
+    border-color: rgba(74, 222, 128, 0.3);
+}
+
+.roulette-outcome.lost {
+    color: #fca5a5;
+    background: rgba(248, 113, 113, 0.08);
+    border-color: rgba(248, 113, 113, 0.25);
+}
+
+.roulette-signin {
+    text-align: center;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(184, 193, 236, 0.5);
+    margin: 1.25rem 0 0 0;
+}
+
+@media (max-width: 700px) {
+    .roulette-board {
+        grid-template-columns: 1fr;
+    }
+
+    .roulette-bet-list {
+        max-height: 140px;
+    }
+}

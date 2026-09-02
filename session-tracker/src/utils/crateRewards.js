@@ -2,21 +2,23 @@
 
 // Loot table: weight determines relative chance
 // Higher weight = more common
+//
+// The four premium unlocks (gold, rainbow, crown, money wings) are deliberately
+// several times rarer than the rest — they are the chase items, and pulling one
+// should feel like an event rather than a matter of turning up.
 export const CRATE_REWARDS = [
-    // --- XP (most common drops) ---
-    { id: 'xp-5', type: 'xp', value: 5, label: '5 XP', rarity: 'common', weight: 25 },
-    { id: 'xp-10', type: 'xp', value: 10, label: '10 XP', rarity: 'common', weight: 22 },
-    { id: 'xp-15', type: 'xp', value: 15, label: '15 XP', rarity: 'common', weight: 18 },
-    { id: 'xp-25', type: 'xp', value: 25, label: '25 XP', rarity: 'uncommon', weight: 10 },
-    { id: 'xp-50', type: 'xp', value: 50, label: '50 XP', rarity: 'rare', weight: 4 },
-
     // --- COINS ---
-    { id: 'coins-25', type: 'coins', value: 25, label: '25 Coins', rarity: 'common', weight: 12 },
-    { id: 'coins-50', type: 'coins', value: 50, label: '50 Coins', rarity: 'common', weight: 10 },
-    { id: 'coins-75', type: 'coins', value: 75, label: '75 Coins', rarity: 'uncommon', weight: 7 },
-    { id: 'coins-100', type: 'coins', value: 100, label: '100 Coins', rarity: 'uncommon', weight: 5 },
-    { id: 'coins-150', type: 'coins', value: 150, label: '150 Coins', rarity: 'rare', weight: 3 },
-    { id: 'coins-200', type: 'coins', value: 200, label: '200 Coins', rarity: 'rare', weight: 2 },
+    // 100 is the floor, 1000 the ceiling. Weights drop off sharply so the top
+    // tier stays a genuine result rather than a routine one.
+    //
+    // These absorb the 79 weight the XP drops used to hold, split in proportion
+    // to their old values. That keeps the table's grand total unchanged, so
+    // every shop item's drop rate is exactly what it was before XP was removed.
+    { id: 'coins-100', type: 'coins', value: 100, label: '🪙 100 Coins', rarity: 'common', weight: 47.31 },
+    { id: 'coins-150', type: 'coins', value: 150, label: '🪙 150 Coins', rarity: 'common', weight: 33.80 },
+    { id: 'coins-250', type: 'coins', value: 250, label: '🪙 250 Coins', rarity: 'uncommon', weight: 20.28 },
+    { id: 'coins-500', type: 'coins', value: 500, label: '🪙 500 Coins', rarity: 'rare', weight: 8.45 },
+    { id: 'coins-1000', type: 'coins', value: 1000, label: '🪙 1000 Coins', rarity: 'epic', weight: 2.37 },
 
     // --- COLORS ---
     { id: 'color-white', type: 'shopItem', shopId: 'color-white', label: '🎨 White Name', rarity: 'common', weight: 5 },
@@ -27,8 +29,8 @@ export const CRATE_REWARDS = [
     { id: 'color-pink', type: 'shopItem', shopId: 'color-pink', label: '🎨 Pink Name', rarity: 'rare', weight: 2 },
     { id: 'color-orange', type: 'shopItem', shopId: 'color-orange', label: '🎨 Orange Name', rarity: 'rare', weight: 2 },
     { id: 'color-cyan', type: 'shopItem', shopId: 'color-cyan', label: '🎨 Cyan Name', rarity: 'rare', weight: 1.5 },
-    { id: 'color-gold', type: 'shopItem', shopId: 'color-gold', label: '🎨 Gold Name', rarity: 'epic', weight: 0.8 },
-    { id: 'color-rainbow', type: 'shopItem', shopId: 'color-rainbow', label: '🌈 Rainbow Name', rarity: 'legendary', weight: 0.2 },
+    { id: 'color-gold', type: 'shopItem', shopId: 'color-gold', label: '🎨 Gold Name', rarity: 'epic', weight: 0.18 },
+    { id: 'color-rainbow', type: 'shopItem', shopId: 'color-rainbow', label: '🌈 Rainbow Name', rarity: 'legendary', weight: 0.04 },
 
     // --- EMOJIS ---
     { id: 'emoji-cat', type: 'shopItem', shopId: 'emoji-cat', label: '😸 Cat Badge', rarity: 'uncommon', weight: 2.5 },
@@ -39,8 +41,8 @@ export const CRATE_REWARDS = [
     { id: 'emoji-fire', type: 'shopItem', shopId: 'emoji-fire', label: '🔥 Fire Badge', rarity: 'epic', weight: 0.8 },
     { id: 'emoji-diamond', type: 'shopItem', shopId: 'emoji-diamond', label: '💎 Diamond Badge', rarity: 'epic', weight: 0.6 },
     { id: 'emoji-ghost', type: 'shopItem', shopId: 'emoji-ghost', label: '👻 Ghost Badge', rarity: 'epic', weight: 0.5 },
-    { id: 'emoji-moneywings', type: 'shopItem', shopId: 'emoji-moneywings', label: '💸 Money Wings Badge', rarity: 'legendary', weight: 0.3 },
-    { id: 'emoji-crown', type: 'shopItem', shopId: 'emoji-crown', label: '👑 Crown Badge', rarity: 'legendary', weight: 0.15 },
+    { id: 'emoji-moneywings', type: 'shopItem', shopId: 'emoji-moneywings', label: '💸 Money Wings Badge', rarity: 'legendary', weight: 0.06 },
+    { id: 'emoji-crown', type: 'shopItem', shopId: 'emoji-crown', label: '👑 Crown Badge', rarity: 'legendary', weight: 0.03 },
 ];
 
 const RARITY_COLORS = {
@@ -77,4 +79,34 @@ export const generateReelStrip = (winningReward, totalItems = 40, winIndex = 32)
         }
     }
     return strip;
+};
+// Every reward with its drop chance, grouped by rarity — used by the loot table
+// in the crate modal so players can see the odds before opening.
+//
+// Chance is derived from the same weights rollCrate uses, so the displayed odds
+// can never drift from the actual drop rates.
+export const getLootTable = () => {
+    const totalWeight = CRATE_REWARDS.reduce((sum, r) => sum + r.weight, 0);
+
+    const withChance = CRATE_REWARDS.map((r) => ({
+        ...r,
+        chance: (r.weight / totalWeight) * 100,
+    }));
+
+    // Rarest first within each tier, so the headline drops sit at the top
+    const order = ['legendary', 'epic', 'rare', 'uncommon', 'common'];
+
+    return order
+        .map((rarity) => ({
+            rarity,
+            color: getRarityColor(rarity),
+            items: withChance
+                .filter((r) => r.rarity === rarity)
+                .sort((a, b) => a.chance - b.chance),
+            // Combined odds of getting anything from this tier
+            totalChance: withChance
+                .filter((r) => r.rarity === rarity)
+                .reduce((sum, r) => sum + r.chance, 0),
+        }))
+        .filter((group) => group.items.length > 0);
 };

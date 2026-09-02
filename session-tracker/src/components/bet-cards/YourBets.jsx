@@ -61,21 +61,24 @@ export default function YourBets() {
     if (!user || bets.length === 0) return null;
 
     return (
-        <div className="your-bets-section">
-            <h3 className="your-bets-title">Your Bets</h3>
+        <div className="bets-card your-bets-section">
+            <div className="your-bets-head">
+                <h2 className="bets-card-title">Your Open Bets</h2>
+                <span className="your-bets-pill">{bets.length}</span>
+            </div>
             {isSessionActive && (
                 <div className="session-active-warning">
-                    🔒 Cancellations locked during active session
+                    Cancellations locked during active session
                 </div>
             )}
             <div className="your-bets-table-wrapper">
                 <table className="your-bets-table">
                     <thead>
                         <tr>
-                            <th>Bet Type</th>
-                            <th>Amount</th>
+                            <th>Market</th>
+                            <th>Stake</th>
                             <th>Payout</th>
-                            <th>Cancel</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -91,7 +94,7 @@ export default function YourBets() {
                                         disabled={isSessionActive}
                                         title={isSessionActive ? 'Locked during session' : 'Cancel bet and refund coins'}
                                     >
-                                        {isSessionActive ? '🔒' : '✕'}
+                                        ✕
                                     </button>
                                 </td>
                             </tr>

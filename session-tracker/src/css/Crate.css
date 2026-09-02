@@ -382,3 +382,132 @@
         font-size: 0.95rem;
     }
 }
+
+/* ============================================
+   LOOT TABLE / DROP RATES
+   ============================================ */
+
+.crate-odds {
+    margin-bottom: 1.25rem;
+}
+
+.crate-odds-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.6rem;
+    border-radius: 10px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    background: rgba(102, 126, 234, 0.07);
+    color: rgba(184, 193, 236, 0.8);
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.crate-odds-toggle:hover {
+    background: rgba(102, 126, 234, 0.14);
+    color: #fff;
+}
+
+.crate-odds-chevron {
+    font-size: 0.7rem;
+    transition: transform 0.25s ease;
+}
+
+.crate-odds-chevron.open {
+    transform: rotate(180deg);
+}
+
+/* Scrolls inside the modal rather than pushing the reel off screen */
+.crate-odds-list {
+    margin-top: 0.6rem;
+    max-height: 240px;
+    overflow-y: auto;
+    padding-right: 0.3rem;
+    animation: crateOddsIn 0.25s ease-out;
+}
+
+@keyframes crateOddsIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.crate-odds-group {
+    margin-bottom: 0.75rem;
+}
+
+.crate-odds-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Rarity heading, tinted by that tier's colour */
+.crate-odds-group-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    border-left: 3px solid var(--rarity-color);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 0.3rem;
+}
+
+.crate-odds-rarity {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--rarity-color);
+}
+
+.crate-odds-group-total {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(184, 193, 236, 0.5);
+    font-variant-numeric: tabular-nums;
+}
+
+.crate-odds-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.28rem 0.5rem 0.28rem 0.85rem;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.76rem;
+}
+
+.crate-odds-label {
+    color: rgba(184, 193, 236, 0.85);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.crate-odds-chance {
+    flex-shrink: 0;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 600px) {
+    .crate-odds-list {
+        max-height: 190px;
+    }
+
+    .crate-odds-row {
+        font-size: 0.72rem;
+    }
+}

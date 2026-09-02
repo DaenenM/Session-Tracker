@@ -1,9 +1,11 @@
 // src/components/Register.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../css/Auth.css';
 
-export default function Register({ onNavigate }) {
+export default function Register() {
+  const navigate = useNavigate();
   const { register, loginWithGoogle, error, setError } = useAuth();
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
@@ -33,12 +35,8 @@ export default function Register({ onNavigate }) {
     try {
       await register(email, password, displayName);
       console.log('Registration successful!');
-      // Small delay to ensure auth state is updated
-      setTimeout(() => {
-        if (onNavigate) {
-          onNavigate('/');
-        }
-      }, 200);
+      // replace:true so Back doesn't return to the form they just completed
+      navigate('/', { replace: true });
     } catch (err) {
       console.error('Registration error:', err);
       setLocalError(err.message || 'Registration failed. Please try again.');
@@ -54,12 +52,8 @@ export default function Register({ onNavigate }) {
     try {
       await loginWithGoogle();
       console.log('Google login successful!');
-      // Small delay to ensure auth state is updated
-      setTimeout(() => {
-        if (onNavigate) {
-          onNavigate('/');
-        }
-      }, 200);
+      // replace:true so Back doesn't return to the form they just completed
+      navigate('/', { replace: true });
     } catch (err) {
       console.error('Google login error:', err);
       setLocalError(err.message || 'Google sign-in failed. Please try again.');
@@ -173,7 +167,7 @@ export default function Register({ onNavigate }) {
           <button
             type="button"
             className="auth-footer-link"
-            onClick={() => onNavigate?.('/login')}
+            onClick={() => navigate('/login')}
           >
             Sign In
           </button>

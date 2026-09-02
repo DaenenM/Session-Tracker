@@ -1,0 +1,67 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // A user may read anyone's profile (leaderboard, bet lists) but only write
+    // their own.
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+      // Subcollections (bets, coinflips, roulette history) stay private-ish:
+      // readable by any signed-in user for the public lists, writable only by
+      // their owner.
+      match /{document=**} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Roulette is a shared table: everyone can see the bets on a round, but a
+    // player may only create and settle their own, and the document id must be
+    // their uid so nobody can bet twice in one round.
+    match /rouletteRounds/{roundId}/bets/{uid} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.auth.uid == uid
+                    && request.resource.data.uid == uid
+                    && request.resource.data.amount is number
+                    && request.resource.data.amount >= 1
+                    && request.resource.data.settled == false
+                    && request.resource.data.color in ['red', 'black', 'green'];
+      // Settlement only ever flips an unsettled bet to settled
+      allow update: if request.auth != null
+                    && request.auth.uid == uid
+                    && resource.data.settled == false
+                    && request.resource.data.settled == true;
+      allow delete: if false;
+    }
+
+    // Collection-group reads.
+    //
+    // The leaderboard's record cards query every user's bets and coin flips at
+    // once via collectionGroup(). Those queries do NOT match the path-scoped
+    // rules above — a collection group has no single parent path — so they need
+    // their own rules or the whole query is denied and the cards come back empty.
+    //
+    // Read-only: writes still have to go through the path-scoped rules, which
+    // check that the document belongs to the signed-in user.
+    match /{path=**}/bets/{betId} {
+      allow read: if request.auth != null;
+    }
+
+    match /{path=**}/coinflips/{flipId} {
+      allow read: if request.auth != null;
+    }
+
+    match /{path=**}/roulette/{spinId} {
+      allow read: if request.auth != null;
+    }
+
+    // Sessions and everything else the app already relies on
+    match /sessions/{sessionId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
